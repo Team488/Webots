@@ -4,8 +4,6 @@ import sys
 from flask import Flask, request       
 from controller import Robot    
 
-print("Http robot starting...")
-
 app = Flask(__name__)
 
 @app.route("/ping")
@@ -13,8 +11,8 @@ def ping():
     "Basic Health check"
     return "pong"
 
-@app.route("/set_motors", methods=['POST'])
-def set_motors():
+@app.route("/motors", methods=['PUT'])
+def put_motors():
     requestData = request.json
     for motor_dict in requestData['motors']:
         motor_id = motor_dict["id"]
@@ -27,25 +25,20 @@ def set_motors():
 
     return "ack"
 
-# Create the robot
-robot = Robot()
+def build_motor_map(robot):
+    # Initialize motors
+    motor_map = {}
+    for i in range(1, 50):
+        name = f"Motor{i}"
+        # TODO: Find a way to test for motor presence by name without the warning logs this approach generates
+        motor = robot.getMotor(name)
+        if motor:
+            motor_map[name] = motor
+            # This sets the motor into velocity control (rather than position)
+            motor.setPosition(float("inf"))
+            motor.setVelocity(0)
 
-# TODO: Maybe find a way to generalize the following motor and sensor initializations.
-#       For example, the robot template could have motor and sensor identifiers baked
-#       into the controller args. These would be specific to a given robot template
-#       and would come before any additional args that the supervisor adds.
 
-# Initialize motors
-motor_map = {}
-for i in range(1, 50):
-    name = f"Motor{i}"
-    # TODO: Find a way to test for motor presence by name without the warning logs this approach generates
-    motor = robot.getMotor(name)
-    if motor:
-        motor_map[name] = motor
-        # This sets the motor into velocity control (rather than position)
-        motor.setPosition(float("inf"))
-        motor.setVelocity(0)
 
 def start_flask():
     # TODO: use argparse to clean this up
@@ -62,6 +55,9 @@ if __name__ == "__main__":
             pass
 
     print("Starting flask server")
+    # Create the robot
+    robot = Robot()
+    motor_map = build_motor_map()
     threading.Thread(target=start_flask).start()
 
     # Run the simulation loop
