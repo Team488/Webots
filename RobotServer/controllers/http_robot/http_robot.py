@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 @app.route("/ping")
 def ping():
-    print("ping", flush=True)
+    print("ping")
     return "pong"
 
 @app.route("/spin")
@@ -62,6 +62,10 @@ motorFrontRight.setVelocity(0.0)
 motorBackLeft.setVelocity(0.0)
 motorBackRight.setVelocity(0.0)
 
+def start_flask():
+    # TODO: use argparse to clean this up
+    port = int(sys.argv[2])
+    app.run(port=port)
 
 if __name__ == "__main__":
     # If the controller started before the supervisor inserted all of the args,
@@ -73,7 +77,7 @@ if __name__ == "__main__":
             pass
 
     print("Starting flask server")
-    threading.Thread(target=app.run).start()
+    threading.Thread(target=start_flask).start()
 
     # Run the simulation loop
     print("Starting null op simulation loop")
