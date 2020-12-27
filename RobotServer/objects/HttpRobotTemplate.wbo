@@ -9,7 +9,7 @@ DEF RobotTemplate Robot {
       }
       device [
         RotationalMotor {
-          name "FL motor"
+          name "Motor1"
         }
       ]
       endPoint Solid {
@@ -43,7 +43,7 @@ DEF RobotTemplate Robot {
       }
       device [
         RotationalMotor {
-          name "FR motor"
+          name "Motor2"
         }
       ]
       endPoint Solid {
@@ -77,7 +77,7 @@ DEF RobotTemplate Robot {
       }
       device [
         RotationalMotor {
-          name "BL motor"
+          name "Motor3"
         }
       ]
       endPoint Solid {
@@ -111,7 +111,7 @@ DEF RobotTemplate Robot {
       }
       device [
         RotationalMotor {
-          name "BR motor"
+          name "Motor4"
         }
       ]
       endPoint Solid {

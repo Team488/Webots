@@ -1,7 +1,7 @@
 import threading               
 import sys                             
 
-from flask import Flask         
+from flask import Flask, request       
 from controller import Robot    
 
 print("Http robot starting...")
@@ -10,35 +10,22 @@ app = Flask(__name__)
 
 @app.route("/ping")
 def ping():
-    print("ping")
+    "Basic Health check"
     return "pong"
 
-@app.route("/spin")
-def spin():
-    print("Trying to spin")
-    motorFrontLeft.setVelocity(1.0)
-    motorFrontRight.setVelocity(-1.0)
-    motorBackLeft.setVelocity(1.0)
-    motorBackRight.setVelocity(-1.0)
+@app.route("/set_motors", methods=['POST'])
+def set_motors():
+    requestData = request.json
+    for motor_dict in requestData['motors']:
+        motor_id = motor_dict["id"]
+        value = motor_dict["val"]
+        if motor_id in motor_map:
+            motor = motor_map[motor_id]
+            motor.setVelocity(float(value))
+        else:
+            raise Exception(f"No motor named {motor_id} found")
+
     return "ack"
-
-@app.route("/")
-def main():
-    # Send inputs to the robot
-    value = requestData.get("vFrontLeft")
-    if value != None:
-        motorFrontLeft.setVelocity(float(value))
-    value = requestData.get("vFrontRight")
-    if value != None:
-        motorFrontRight.setVelocity(float(value))
-    value = requestData.get("vBackLeft")
-    if value != None:
-        motorBackLeft.setVelocity(float(value))
-    value = requestData.get("vBackRight")
-    if value != None:
-        motorBackRight.setVelocity(float(value))
-
-    return data
 
 # Create the robot
 robot = Robot()
@@ -49,18 +36,16 @@ robot = Robot()
 #       and would come before any additional args that the supervisor adds.
 
 # Initialize motors
-motorFrontLeft = robot.getMotor("FL motor")
-motorFrontRight = robot.getMotor("FR motor")
-motorBackLeft = robot.getMotor("BL motor")
-motorBackRight = robot.getMotor("BR motor")
-motorFrontLeft.setPosition(float("inf"))
-motorFrontRight.setPosition(float("inf"))
-motorBackLeft.setPosition(float("inf"))
-motorBackRight.setPosition(float("inf"))
-motorFrontLeft.setVelocity(0.0)
-motorFrontRight.setVelocity(0.0)
-motorBackLeft.setVelocity(0.0)
-motorBackRight.setVelocity(0.0)
+motor_map = {}
+for i in range(1, 50):
+    name = f"Motor{i}"
+    # TODO: Find a way to test for motor presence by name without the warning logs this approach generates
+    motor = robot.getMotor(name)
+    if motor:
+        motor_map[name] = motor
+        # This sets the motor into velocity control (rather than position)
+        motor.setPosition(float("inf"))
+        motor.setVelocity(0)
 
 def start_flask():
     # TODO: use argparse to clean this up
