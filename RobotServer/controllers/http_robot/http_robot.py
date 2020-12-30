@@ -27,16 +27,17 @@ def put_motors():
 
 def build_motor_map(robot):
     # Initialize motors
-    motor_map = {}
+    result = {}
     for i in range(1, 50):
         name = f"Motor{i}"
         # TODO: Find a way to test for motor presence by name without the warning logs this approach generates
         motor = robot.getMotor(name)
         if motor:
-            motor_map[name] = motor
+            result[name] = motor
             # This sets the motor into velocity control (rather than position)
             motor.setPosition(float("inf"))
             motor.setVelocity(0)
+    return result
 
 
 
@@ -46,6 +47,8 @@ def start_flask():
     app.run(port=port)
 
 if __name__ == "__main__":
+    # Create the robot
+    robot = Robot()
     # If the controller started before the supervisor inserted all of the args,
     # just run an empty simulator loop so we don't block the simulation while
     # we wait for the supervisor to restart this controller
@@ -55,15 +58,13 @@ if __name__ == "__main__":
             pass
 
     print("Starting flask server")
-    # Create the robot
-    robot = Robot()
-    motor_map = build_motor_map()
+    motor_map = build_motor_map(robot)
     threading.Thread(target=start_flask).start()
 
     # Run the simulation loop
     print("Starting null op simulation loop")
     timestep = int(robot.getBasicTimeStep())
     while robot.step(timestep) != -1:
-        pass
+        time.sleep(0.01)
 
 
