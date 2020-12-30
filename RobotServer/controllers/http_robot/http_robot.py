@@ -1,10 +1,16 @@
 import threading               
 import sys                             
+import logging
+import time
 
 from flask import Flask, request       
 from controller import Robot    
 
 app = Flask(__name__)
+
+# flask log level
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
 
 @app.route("/ping")
 def ping():
@@ -13,6 +19,7 @@ def ping():
 
 @app.route("/motors", methods=['PUT'])
 def put_motors():
+    global motor_map
     requestData = request.json
     for motor_dict in requestData['motors']:
         motor_id = motor_dict["id"]
@@ -42,6 +49,7 @@ def build_motor_map(robot):
 
 
 def start_flask():
+    global app
     # TODO: use argparse to clean this up
     port = int(sys.argv[2])
     app.run(port=port)
@@ -49,11 +57,12 @@ def start_flask():
 if __name__ == "__main__":
     # Create the robot
     robot = Robot()
+    timestep = int(robot.getBasicTimeStep())
+
     # If the controller started before the supervisor inserted all of the args,
     # just run an empty simulator loop so we don't block the simulation while
     # we wait for the supervisor to restart this controller
     if sys.argv[-1] != "READY":
-        timestep = int(robot.getBasicTimeStep())
         while robot.step(timestep) != -1:
             pass
 
@@ -63,8 +72,8 @@ if __name__ == "__main__":
 
     # Run the simulation loop
     print("Starting null op simulation loop")
-    timestep = int(robot.getBasicTimeStep())
     while robot.step(timestep) != -1:
-        time.sleep(0.01)
+        time.sleep(timestep / 1000)
+    print("Finished")
 
 
