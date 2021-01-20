@@ -1,169 +1,81 @@
-#VRML_OBJ R2020b utf8
+#VRML_OBJ R2021a utf8
 DEF RobotTemplate Robot {
-  translation 0 0.1 0
   children [
+    Transform {
+      translation 0 0 0.8128
+      children [
+        Shape {
+          appearance PBRAppearance {
+            metalness 0
+          }
+          geometry Box {
+            size 0.7112 0.9652 1.524
+          }
+        }
+      ]
+    }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position -6.70560578818989
-        anchor 0.055 -0.05 0.03
+        position 3.656510691791486e-07
+        anchor -0.3683 0.35 0.0762
       }
       device [
         RotationalMotor {
           name "Motor1"
-          maxVelocity 50
         }
       ]
-      endPoint Solid {
-        translation 0.055 -0.05 0.03
-        rotation 0.20518222822632196 -0.20518298190411388 -0.9569745018322159 4.668420948702876
-        children [
-          Shape {
-            appearance PBRAppearance {
-              baseColor 0.1 0.1 0.1
-              metalness 0
-            }
-            geometry Cylinder {
-              height 0.005
-              radius 0.015
-            }
-          }
-        ]
-        name "FL wheel"
-        boundingObject Cylinder {
-          height 0.005
-          radius 0.015
-        }
-        physics Physics {
-        }
+      endPoint RobotWheel {
+        translation -0.3683 0.349816 0.0797337
+        name "FL Wheel"
       }
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position -6.705604406558019
-        anchor -0.055 -0.05 0.03
+        position 1.0792643952862534e-08
+        anchor 0.3683 0.35 0.0761856
       }
       device [
         RotationalMotor {
           name "Motor2"
-          maxVelocity 50
         }
       ]
-      endPoint Solid {
-        translation -0.055 -0.05 0.03
-        rotation 0.20518159516580864 -0.2051823488412753 -0.9569747732982262 4.668421232099787
-        children [
-          Shape {
-            appearance PBRAppearance {
-              baseColor 0.1 0.1 0.1
-              metalness 0
-            }
-            geometry Cylinder {
-              height 0.005
-              radius 0.015
-            }
-          }
-        ]
-        name "FR wheel"
-        boundingObject Cylinder {
-          height 0.005
-          radius 0.015
-        }
-        physics Physics {
-        }
+      endPoint RobotWheel {
+        translation 0.3683 0.350012 0.0797337
+        name "FR Wheel"
       }
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position -6.705604383481111
-        anchor 0.055 -0.05 -0.03
+        position -8.85145029509448e-11
+        anchor -0.3683 -0.35 0.0761856
       }
       device [
         RotationalMotor {
           name "Motor3"
-          maxVelocity 50
         }
       ]
-      endPoint Solid {
-        translation 0.055 -0.05 -0.03
-        rotation 0.20518158458870073 -0.20518233826412852 -0.9569747778338438 4.668421236834744
-        children [
-          Shape {
-            appearance PBRAppearance {
-              baseColor 0.1 0.1 0.1
-              metalness 0
-            }
-            geometry Cylinder {
-              height 0.005
-              radius 0.015
-            }
-          }
-        ]
+      endPoint RobotWheel {
+        translation -0.3683 -0.3499999999987441 0.0797325
         name "BL wheel"
-        boundingObject Cylinder {
-          height 0.005
-          radius 0.015
-        }
-        physics Physics {
-        }
       }
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position -6.705605831600737
-        anchor -0.055 -0.05 -0.03
+        position 2.913842280909397e-09
+        anchor 0.3683 -0.35 0.0761856
       }
       device [
         RotationalMotor {
           name "Motor4"
-          maxVelocity 50
         }
       ]
-      endPoint Solid {
-        translation -0.055 -0.05 -0.03
-        rotation 0.2051822483220229 -0.20518300199988887 -0.9569744932148575 4.668420939706783
-        children [
-          Shape {
-            appearance PBRAppearance {
-              baseColor 0.1 0.1 0.1
-              metalness 0
-            }
-            geometry Cylinder {
-              height 0.005
-              radius 0.015
-            }
-          }
-        ]
+      endPoint RobotWheel {
+        translation 0.3683 -0.349988 0.0797325
         name "BR wheel"
-        boundingObject Cylinder {
-          height 0.005
-          radius 0.015
-        }
-        physics Physics {
-        }
       }
     }
     DistanceSensor {
-      translation 0 -0.03 0.055
-      rotation 0 1 0 -1.5708
-      children [
-        Shape {
-          appearance PBRAppearance {
-            baseColor 0 0 1
-            metalness 0
-          }
-          geometry Box {
-            size 0.01 0.01 0.01
-          }
-        }
-      ]
-      name "BLUE distance sensor"
-      lookupTable [
-        0 0 0
-        100 100 0
-      ]
-    }
-    DistanceSensor {
-      translation 0.055 -0.03 0
+      translation 0.3683 0 0.1
       children [
         Shape {
           appearance PBRAppearance {
@@ -171,7 +83,7 @@ DEF RobotTemplate Robot {
             metalness 0
           }
           geometry Box {
-            size 0.01 0.01 0.01
+            size 0.0254 0.05 0.05
           }
         }
       ]
@@ -181,23 +93,44 @@ DEF RobotTemplate Robot {
         100 100 0
       ]
     }
-    Shape {
-      appearance PBRAppearance {
-        metalness 0
-      }
-      geometry Box {
-        size 0.1 0.1 0.1
-      }
+    DistanceSensor {
+      translation 0 0.4953 0.1
+      rotation 0 0 -1 -1.5708
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0 0 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.0254 0.05 0.05
+          }
+        }
+      ]
+      name "BLUE distance sensor"
+      lookupTable [
+        0 0 0
+        100 100 0
+      ]
     }
   ]
-  name "robot_main"
-  boundingObject Box {
-    size 0.1 0.1 0.1
+  name "basic robot"
+  boundingObject Transform {
+    translation 0 0 0.8128
+    children [
+      Shape {
+        appearance PBRAppearance {
+          metalness 0
+        }
+        geometry Box {
+          size 0.7112 0.9652 1.524
+        }
+      }
+    ]
   }
   physics Physics {
-    centerOfMass [
-      0 0 0
-    ]
+    density -1
+    mass 50
   }
   controller "http_robot"
 }
