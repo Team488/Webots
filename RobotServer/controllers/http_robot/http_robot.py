@@ -13,7 +13,7 @@ app = Flask(__name__)
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
-def getDeviceId(device):
+def get_device_id(device):
     return device.getName().split("#")[0].strip()
 
 @app.route("/ping")
@@ -22,59 +22,59 @@ def ping():
     return "pong"
 
 @app.route("/motors", methods=['PUT'])
-def putMotors():
-    global deviceMap
-    requestData = request.json
-    for requestMotorValues in requestData['motors']:
-        requestMotorId = requestMotorValues.get("id")
-        if requestMotorId in deviceMap["Motors"]:
-            motor = deviceMap["Motors"].get(requestMotorId)
+def put_motors():
+    global device_map
+    request_data = request.json
+    for request_motor_values in request_data['motors']:
+        request_motor_id = request_motor_values.get("id")
+        motor = device_map["Motors"].get(request_motor_id)
+        if motor:
             # TODO: handle other modes of setting motor output
-            throttlePercent = requestMotorValues.get("val")
-            if throttlePercent:
-                motor.setVelocity(float(throttlePercent * motor.getMaxVelocity()))
+            throttle_percent = request_motor_values.get("val")
+            if throttle_percent:
+                motor.setVelocity(float(throttle_percent * motor.getMaxVelocity()))
         else:
-            raise Exception(f"No motor named {motor_id} found")
+            raise Exception(f"No motor named {request_motor_id} found")
 
     # return sensor data
     return json.dumps({
         "Sensors": [
             {
-                "ID": getDeviceId(distanceSensor),
+                "ID": get_device_id(distance_sensor),
                 "Payload": {
-                    "Distance": distanceSensor.getValue()
+                    "Distance": distance_sensor.getValue()
                 }
             }
-            for distanceSensor in deviceMap["DistanceSensors"].values()
+            for distance_sensor in device_map["DistanceSensors"].values()
         ]
     })
     
-def buildDeviceMap(robot):
-    deviceMap = {
+def build_device_map(robot):
+    device_map = {
         "Motors": {},
         "DistanceSensors": {}
     }
 
-    deviceCount = robot.getNumberOfDevices()
-    for i in range(deviceCount):
+    device_count = robot.getNumberOfDevices()
+    for i in range(device_count):
         device = robot.getDeviceByIndex(i)
-        deviceType = device.getNodeType()
-        deviceId = getDeviceId(device)
+        device_type = device.getNodeType()
+        device_id = get_device_id(device)
         
-        if deviceType == Node.ROTATIONAL_MOTOR:
+        if device_type == Node.ROTATIONAL_MOTOR:
             # Initialize the motor with an infinite target position so that we can directly control velocity
             device.setPosition(float("inf"))
             device.setVelocity(0)
-            deviceMap["Motors"][deviceId] = device
+            device_map["Motors"][device_id] = device
 
-        elif deviceType == Node.DISTANCE_SENSOR:
+        elif device_type == Node.DISTANCE_SENSOR:
             # Initialize the distance sensor with an update frequency
             device.enable(timestep)
-            deviceMap["DistanceSensors"][deviceId] = device
+            device_map["DistanceSensors"][device_id] = device
 
-    return deviceMap
+    return device_map
 
-def startFlask():
+def start_flask():
     global app
     # TODO: use argparse to clean this up
     port = int(sys.argv[2])
@@ -93,8 +93,8 @@ if __name__ == "__main__":
             pass
 
     print("Starting flask server")
-    deviceMap = buildDeviceMap(robot)
-    threading.Thread(target=startFlask).start()
+    device_map = build_device_map(robot)
+    threading.Thread(target=start_flask).start()
 
     # Run the simulation loop
     print("Starting null op simulation loop")
