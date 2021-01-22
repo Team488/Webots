@@ -58,7 +58,7 @@ DEF RobotTemplate Robot {
         }
       ]
       endPoint RobotWheel {
-        translation -0.3683 -0.3499999999987441 0.0797325
+        translation -0.3683 -0.3499999999984301 0.0797325
         name "BL wheel"
       }
     }
@@ -69,7 +69,8 @@ DEF RobotTemplate Robot {
       }
       device [
         RotationalMotor {
-          name "Motor4 # back rignt"
+          name "Motor4 # back right"
+          maxVelocity 50
         }
       ]
       endPoint RobotWheel {
