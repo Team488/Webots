@@ -58,10 +58,22 @@ def put_motors():
         for position_sensor in device_map["PositionSensors"].values()
     ]
 
+    imu_sensor_values =  [{
+            "ID": get_device_id(imu),
+            "Payload": {
+                "Roll": imu.getRollPitchYaw()[0],
+                "Pitch": imu.getRollPitchYaw()[1],
+                "Yaw": imu.getRollPitchYaw()[2],
+            }
+        }
+        for imu in device_map["IMUs"].values()
+    ]
+
     return json.dumps({
         "Sensors": list(itertools.chain(
             distance_sensor_values,
-            position_sensor_values
+            position_sensor_values,
+            imu_sensor_values
         ))
     })
     

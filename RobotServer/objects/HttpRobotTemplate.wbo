@@ -1,6 +1,9 @@
 #VRML_OBJ R2021a utf8
 DEF RobotTemplate Robot {
   children [
+    InertialUnit {
+      name "IMU1"
+    }
     Transform {
       translation 0 0 0.8128
       children [
