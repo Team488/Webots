@@ -21,7 +21,8 @@ DEF RobotTemplate Robot {
       }
       device [
         RotationalMotor {
-          name "Motor1"
+          name "Motor1 # front left"
+          maxVelocity 50
         }
       ]
       endPoint RobotWheel {
@@ -36,7 +37,8 @@ DEF RobotTemplate Robot {
       }
       device [
         RotationalMotor {
-          name "Motor2"
+          name "Motor2 # front right"
+          maxVelocity 50
         }
       ]
       endPoint RobotWheel {
@@ -51,7 +53,8 @@ DEF RobotTemplate Robot {
       }
       device [
         RotationalMotor {
-          name "Motor3"
+          name "Motor3 # back left"
+          maxVelocity 50
         }
       ]
       endPoint RobotWheel {
@@ -66,7 +69,7 @@ DEF RobotTemplate Robot {
       }
       device [
         RotationalMotor {
-          name "Motor4"
+          name "Motor4 # back rignt"
         }
       ]
       endPoint RobotWheel {
@@ -87,7 +90,7 @@ DEF RobotTemplate Robot {
           }
         }
       ]
-      name "RED distance sensor"
+      name "Analog1"
       lookupTable [
         0 0 0
         100 100 0
@@ -107,7 +110,7 @@ DEF RobotTemplate Robot {
           }
         }
       ]
-      name "BLUE distance sensor"
+      name "Analog2"
       lookupTable [
         0 0 0
         100 100 0
