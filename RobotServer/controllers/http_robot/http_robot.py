@@ -86,6 +86,9 @@ def build_device_map(robot):
         elif device_type == Node.POSITION_SENSOR:
             device.enable(timestep)
             device_map["PositionSensors"][device_id] = device
+        elif device_type == Node.INERTIAL_UNIT:
+            device.enable(timestep)
+            device_map["IMUs"][device_id] = device
 
     return device_map
 
