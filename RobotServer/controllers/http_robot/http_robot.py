@@ -7,7 +7,7 @@ import itertools
 from collections import defaultdict
 
 from flask import Flask, request       
-from controller import Node, Robot, Supervisor
+from controller import Node, Supervisor
 
 app = Flask(__name__)
 
