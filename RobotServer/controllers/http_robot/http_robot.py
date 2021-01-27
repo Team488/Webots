@@ -81,14 +81,16 @@ def put_motors():
 def reset_position():
     requestData = request.json or {}
     target_position = requestData.get("position", [0,0,0.1])
-    print(f"Resetting position to {target_position}")
+    # defaults to straight up
+    target_rotation = requestData.get("rotation", [1, 0, 0, 0]) 
+    print(f"Resetting position to {target_position} @ {target_rotation}")
 
     robot_node = robot.getFromDef("RobotTemplate")
     translation_field = robot_node.getField("translation")
     rotation_field = robot_node.getField("rotation")
 
     translation_field.setSFVec3f(target_position)
-    rotation_field.setSFRotation([1, 0, 0, 0]) # straight up
+    rotation_field.setSFRotation(target_rotation)
     robot_node.resetPhysics()
 
     return 'OK'
