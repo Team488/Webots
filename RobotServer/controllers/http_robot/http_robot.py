@@ -7,7 +7,7 @@ import itertools
 from collections import defaultdict
 
 from flask import Flask, request       
-from controller import Node, Robot
+from controller import Node, Robot, Supervisor
 
 app = Flask(__name__)
 
@@ -76,6 +76,22 @@ def put_motors():
             imu_sensor_values
         ))
     })
+
+@app.route("/position", methods=['PUT'])
+def reset_position():
+    requestData = request.json or {}
+    target_position = requestData.get("position", [0,0,0.1])
+    print(f"Resetting position to {target_position}")
+
+    robot_node = robot.getFromDef("RobotTemplate")
+    translation_field = robot_node.getField("translation")
+    rotation_field = robot_node.getField("rotation")
+
+    translation_field.setSFVec3f(target_position)
+    rotation_field.setSFRotation([1, 0, 0, 0]) # straight up
+    robot_node.resetPhysics()
+
+    return 'OK'
     
 def build_device_map(robot):
     device_map = defaultdict(dict)
@@ -112,7 +128,7 @@ def start_flask():
 
 if __name__ == "__main__":
     # Create the robot
-    robot = Robot()
+    robot = Supervisor()
     timestep = int(robot.getBasicTimeStep())
 
     print("Starting flask server")
