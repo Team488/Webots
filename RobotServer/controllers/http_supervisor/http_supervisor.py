@@ -78,6 +78,8 @@ def spawn_robot(robot_template):
 
 def start_flask():
     global app
+
+    # Set the host to allow remote connections
     app.run(host='0.0.0.0', port=SUPERVISOR_PORT)
 
 if __name__ == "__main__":
