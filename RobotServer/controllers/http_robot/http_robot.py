@@ -126,7 +126,7 @@ def start_flask():
     global app
     # TODO: use argparse to clean this up
     port = int(sys.argv[2])
-    app.run(port=port)
+    app.run(host='0.0.0.0', port=port)
 
 if __name__ == "__main__":
     # Create the robot
