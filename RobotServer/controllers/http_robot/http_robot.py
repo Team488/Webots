@@ -1,13 +1,12 @@
-import threading               
-import sys                             
-import logging
-import time
-import json
-import itertools
 from collections import defaultdict
-
-from flask import Flask, request       
 from controller import Node, Supervisor
+from flask import Flask, request
+import itertools
+import json
+import logging
+import sys
+import threading
+import time
 
 app = Flask(__name__)
 

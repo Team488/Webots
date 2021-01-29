@@ -1,3 +1,4 @@
+from controller import Field, Node, Robot, Supervisor
 from flask import Flask, request
 import logging
 from os import path
@@ -5,11 +6,6 @@ import socket
 import sys
 import threading
 import time
-
-from controller import Robot    
-from controller import Field
-from controller import Node
-from controller import Supervisor
 
 # flask log level
 log = logging.getLogger('werkzeug')
