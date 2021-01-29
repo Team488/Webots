@@ -196,4 +196,5 @@ DEF RobotTemplate Robot {
     ]
   }
   controller ""
+  supervisor TRUE
 }
