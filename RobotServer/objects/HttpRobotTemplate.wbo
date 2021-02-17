@@ -237,4 +237,6 @@ DEF RobotTemplate Robot {
     ]
   }
   controller ""
+  supervisor TRUE
+  synchronization FALSE
 }
