@@ -270,11 +270,10 @@ DEF RobotTemplate Robot {
     density -1
     mass 25
     centerOfMass [
-      0 0.2 0
+      0 0 0.2
     ]
   }
   controller ""
-  supervisor TRUE
   linearVelocity 1.637544555655956e-16 5.830315676885123e-11 4.8870434225886514e-09
   angularVelocity 1.1608378424330004e-10 -2.4320466652167553e-15 2.5915855399400105e-17
 }

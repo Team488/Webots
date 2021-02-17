@@ -233,9 +233,8 @@ DEF RobotTemplate Robot {
     density -1
     mass 25
     centerOfMass [
-      0 0.2 0
+      0 0 0.2
     ]
   }
   controller ""
-  supervisor TRUE
 }
