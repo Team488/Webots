@@ -1,2 +1,5 @@
+cv2
 flask
 jupyter
+numpy
+zmq
