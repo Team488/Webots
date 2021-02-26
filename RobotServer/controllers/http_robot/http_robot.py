@@ -92,6 +92,8 @@ def put_motors():
     position = robot_node.getPosition()
     rotation = robot_node.getOrientation()
     yaw = math.degrees(math.atan2(rotation[0], rotation[1])) % 360
+    # simulation time is reported in seconds
+    time = robot.getTime()
     return json.dumps({
         "Sensors": list(itertools.chain(
             distance_sensor_values,
@@ -100,7 +102,8 @@ def put_motors():
         )),
         "WorldPose": {
             "Position": position,
-            "Yaw": yaw
+            "Yaw": yaw,
+            "Time": time
         }
     })
 
