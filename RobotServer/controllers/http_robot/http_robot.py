@@ -76,8 +76,6 @@ def put_motors():
     rotation = robot_node.getOrientation()
     yaw = math.degrees(math.atan2(rotation[0], rotation[1])) % 360
 
-    draw_line("robotTracker", [0, 0, 0], position)
-
     # simulation time is reported in seconds
     time = robot.getTime()
     return json.dumps({
