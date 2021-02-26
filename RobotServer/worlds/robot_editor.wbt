@@ -1,10 +1,10 @@
-#VRML_SIM R2021a utf8
+#VRML_SIM R2020b utf8
 WorldInfo {
 }
 Viewpoint {
   fieldOfView 1.0472
-  orientation -0.2433748212815203 0.5958256706328148 0.7653498981388477 3.789468375875331
-  position -1.327197293284698 1.5322887819942994 0.9912258028879687
+  orientation 0.36476958038133844 0.49135245429491414 0.7908956434870449 2.054575989376323
+  position 4.391147738835847 2.7181948075653666 3.056175449463277
 }
 Solid {
   rotation 1 0 0 1.57079632679
@@ -18,13 +18,13 @@ Solid {
         emissiveIntensity 0
       }
       geometry Plane {
-        size 5 5
+        size 8 8
       }
     }
   ]
   name "Floor"
   boundingObject Plane {
-    size 5 5
+    size 8 8
   }
   locked TRUE
 }
@@ -37,9 +37,25 @@ DirectionalLight {
   castShadows TRUE
 }
 DEF RobotTemplate Robot {
-  translation 1.9720902316457254e-05 0.048724436282159556 -0.0003148580450256632
-  rotation 0.9999999923505334 1.0500440384111834e-06 0.0001236843987860144 -0.012177729520541488
+  translation -7.332847173746889e-11 3.588567303911594e-08 -0.0013002906363714928
+  rotation 0.9999996186066755 0.0008733764958239467 7.934975596984503e-09 -5.1636750324955205e-06
   children [
+    Camera {
+      translation 0 0.4953 0.5
+      rotation 1 -8.63628e-07 1.68044e-07 1.5708
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0 0 0
+          }
+          geometry Box {
+            size 0.02 0.02 0.02
+          }
+        }
+      ]
+      width 848
+      height 800
+    }
     Transform {
       translation 0 0 0.2
       children [
@@ -212,7 +228,7 @@ DEF RobotTemplate Robot {
       geometriesCount 16
     }
     DistanceSensor {
-      translation 0.3683 0 0.1
+      translation 0.3683 0 0.4
       children [
         Shape {
           appearance PBRAppearance {
@@ -231,7 +247,7 @@ DEF RobotTemplate Robot {
       ]
     }
     DistanceSensor {
-      translation 0 0.4953 0.1
+      translation 0 0.4953 0.4
       rotation 0 0 -1 -1.5708
       children [
         Shape {
@@ -273,7 +289,10 @@ DEF RobotTemplate Robot {
       0 0 0.2
     ]
   }
-  controller ""
   supervisor TRUE
   synchronization FALSE
+}
+B99_Furniture_Sofa_Ottoman {
+  translation 6.351041292413404e-14 3.0000000000093223 -0.0010987208076665145
+  rotation 9.145607439851476e-12 -2.448669084804997e-12 -1 -0.523599
 }
