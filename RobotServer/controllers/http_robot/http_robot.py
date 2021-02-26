@@ -166,7 +166,8 @@ def start_flask():
 def start_zmq():
     global device_map, port
 
-    zmq_port = port + 10
+    zmq_port_offset = 10
+    zmq_port = port + zmq_port_offset
     print(f"[HttpRobot{robotId}] Starting zmq server on tcp://{get_public_ip()}:{zmq_port}", flush=True)
 
     try:
@@ -186,6 +187,9 @@ def start_zmq():
         while True:
             image_data = bytes(camera.getImage())
             zmq_socket.send_multipart([b"image", image_height, image_width, image_depth, image_data])
+            
+            # Sleep so we don't overload the ZMQ socket.
+            # The sleep time is correlated with framerate, but doens't seem to match it exactly.
             time.sleep(1 / 60)
 
     except:
