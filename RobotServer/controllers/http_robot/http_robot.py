@@ -111,10 +111,10 @@ def put_motors():
 
 @app.route("/position", methods=['PUT'])
 def reset_position():
-    requestData = request.json or {}
-    target_position = requestData.get("position", [0,0,0.1])
+    request_data = request.json or {}
+    target_position = request_data.get("position", [0,0,0.1])
     # defaults to straight up
-    target_rotation = requestData.get("rotation", [1, 0, 0, 0]) 
+    target_rotation = request_data.get("rotation", [1, 0, 0, 0]) 
     print(f"Resetting position to {target_position} @ {target_rotation}")
 
     robot_node = robot.getSelf()
@@ -128,6 +128,17 @@ def reset_position():
     return 'OK'
     
 
+@app.route("/overlay/line", methods=['PUT'])
+def put_line():
+    request_data = request.json or {}
+    
+    name = request_data['name']
+    point_1 = request_data['point_1']
+    point_2 = request_data['point_2']
+
+    draw_line(name, point_1, point_2)
+
+    return 'OK'
 
 def build_device_map(robot):
     device_map = defaultdict(dict)
