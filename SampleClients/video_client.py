@@ -11,7 +11,7 @@ socket.connect('tcp://127.0.0.1:10012')
 socket.subscribe('image')
 
 # Initialize Network Tables to communicate with the robot code.
-NetworkTables.initialize('localhost')
+NetworkTables.initialize('127.0.0.1')
 visionSubsystemTable = NetworkTables.getTable('SmartDashboard/VisionSubsystem')
 
 time_prev = time.time()
