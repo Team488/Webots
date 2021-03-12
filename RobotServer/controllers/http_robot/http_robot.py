@@ -143,6 +143,19 @@ def put_line():
     
     return 'OK'
 
+@app.route("/overlay/arrow", methods=['PUT'])
+def put_arrow():
+    request_data = request.json or {}
+    
+    name = request_data['name']
+    point_1 = request_data['point_1']
+    point_2 = request_data['point_2']
+    color_rgb = request_data.get('color', [0, 1, 1])
+
+    draw_arrow(name, point_1, point_2, color_rgb=color_rgb)
+    
+    return 'OK'
+
 def build_device_map(robot):
     device_map = defaultdict(dict)
 
