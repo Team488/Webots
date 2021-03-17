@@ -93,7 +93,7 @@ def put_motors():
             sensor_name = sensor_names_field.getMFString(limit_switch_index)
             sensor_limit = limits_field.getMFFloat(limit_switch_index)
             position_sensor_limit_switch_values.append({
-                "ID": get_device_id(sensor_name),
+                "ID": sensor_name.split("#")[0].strip(), # get_device_id only works for real devices
                 "Payload": {
                     "Triggered": position_sensor_limit_switch.getValue() > sensor_limit - limit_width / 2 and position_sensor_limit_switch.getValue() < sensor_limit + limit_width / 2
                 }
