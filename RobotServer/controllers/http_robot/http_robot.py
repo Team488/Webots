@@ -241,7 +241,6 @@ def build_device_map(robot):
             device.enable(timestep)
             device_map["Gyros"][device_id] = device
 
-    print(device_map)
     return device_map
 
 
