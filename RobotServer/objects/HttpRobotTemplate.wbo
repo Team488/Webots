@@ -8,6 +8,7 @@ DEF RobotTemplate Robot {
     }
     Gyro {
       translation 0 0 0.2
+      name "Gyro1"
     }
     Bumper {
       translation 0 0 0.2
