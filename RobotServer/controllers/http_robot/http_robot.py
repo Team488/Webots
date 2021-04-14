@@ -3,10 +3,12 @@ from collections import defaultdict
 from controller import Node, Supervisor, TouchSensor
 from flask import Flask, request
 from itertools import zip_longest
+import cv2
 import itertools
 import json
 import logging
 import math
+import numpy as np
 import socket
 import sys
 import threading
@@ -422,18 +424,41 @@ def start_zmq():
         import numpy as np
         import zmq
 
+        # Get the camera and properties.
         camera = next(iter(device_map["Cameras"].values()))
-        image_height = camera.getHeight().to_bytes(4, byteorder='big')
-        image_width = camera.getWidth().to_bytes(4, byteorder='big')
-        image_depth = (4).to_bytes(4, byteorder='big')
+        image_width = camera.getWidth()
+        image_height = camera.getHeight()
+        image_depth = 4
 
+        # Set up a camera matrix and distortion coefficients so we can apply distortion to the image.
+        camera_matrix = np.matrix([
+            [   1,    0,  image_width / 2],
+            [   0,    1, image_height / 2],
+            [   0,    0,                1]])
+        dist_coeff = np.matrix([[0.000005, 0, 0, 0]])
+
+        # Start a ZeroMQ server and define a message template.
         zmq_context = zmq.Context()
         zmq_socket = zmq_context.socket(zmq.PUB)
         zmq_socket.bind(f"tcp://0.0.0.0:{zmq_port}")
+        message = [
+            b"image",
+            image_height.to_bytes(4, byteorder='big'),
+            image_width.to_bytes(4, byteorder='big'),
+            image_depth.to_bytes(4, byteorder='big'),
+            None
+        ]
 
         while True:
-            image_data = bytes(camera.getImage())
-            zmq_socket.send_multipart([b"image", image_height, image_width, image_depth, image_data])
+            image_data = camera.getImage()
+
+            # Apply our own distortion since Webots lens distortion is incorrect: https://github.com/cyberbotics/webots/issues/2934
+            image = np.frombuffer(image_data, np.uint8).reshape((image_height, image_width, image_depth))
+            image = cv2.undistort(image, camera_matrix, dist_coeff)
+
+            # Send the image
+            message[-1] = image.tobytes()
+            zmq_socket.send_multipart(message)
             
             # Sleep so we don't overload the ZMQ socket.
             # The sleep time is correlated with framerate, but doens't seem to match it exactly.

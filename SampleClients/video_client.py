@@ -1,5 +1,5 @@
 import cv2
-from networktables import NetworkTables
+#from networktables import NetworkTables
 import numpy as np
 import time
 import zmq
@@ -14,6 +14,18 @@ socket.subscribe('image')
 NetworkTables.initialize('127.0.0.1')
 visionSubsystemTable = NetworkTables.getTable('SmartDashboard/VisionSubsystem')
 
+# Optionally initialize calibration parameters.
+camera_matrix = np.matrix([
+    [2.24302374e+03, 0.00000000e+00, 4.22219291e+02],
+    [0.00000000e+00, 2.15171229e+03, 4.00526670e+02],
+    [0.00000000e+00, 0.00000000e+00, 1.00000000e+00]])
+camera_distortion = np.matrix([[-1.48644996e+01,  3.00917695e+02,  2.85951520e-03, -1.04402635e-03, -2.67804821e+03]])
+camera_new_matrix = np.matrix([
+    [2.07224146e+03, 0.00000000e+00, 4.18721955e+02],
+    [0.00000000e+00, 2.01212500e+03, 4.02976034e+02],
+    [0.00000000e+00, 0.00000000e+00, 1.00000000e+00]])
+camera_roi = (60, 50, 720, 700)
+
 time_prev = time.time()
 while True:
 
@@ -25,19 +37,39 @@ while True:
     image_data = frame[4]
 
     # Construct the image.
-    image = np.frombuffer(image_data, np.uint8).reshape((image_height, image_width, image_depth))
+    image_raw = np.frombuffer(image_data, np.uint8).reshape((image_height, image_width, image_depth))
+
+    # Undistort the image.
+    image = cv2.undistort(image_raw, camera_matrix, camera_distortion, None, camera_new_matrix)
+    x,y,w,h = camera_roi
+    image = image[y:y+h, x:x+w]
 
     # Process the image.
     image_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     image_mask = cv2.inRange(image_hsv, (40,10,0), (70,255,255))
     contours, _ = cv2.findContours(image_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    image_annotated = cv2.drawContours(image, contours, -1, (0,0,255), 2)
+
+    bearing = 0
+    if len(contours) != 0:
+        # Draw the contours.
+        image_annotated = cv2.drawContours(image, contours, -1, (0,0,255), 2)
+
+        # Find and draw the largest contour.
+        largest_contour = max(contours, key=cv2.contourArea)
+        x,y,w,h = cv2.boundingRect(largest_contour)
+        cv2.rectangle(output, (x,y), (x+w, y+h), (255,0,0), 2)
+
+        # Get the horizontal bearing to the contour.
+        x_center = x + (w / 2)
+        bearing = (x_center / (image.shape[1] / 2)) - 1
+
 
     # Publish output.
-    visionSubsystemTable.putNumber('Marker Count Sent', len(contours))
+    visionSubsystemTable.putNumber('Marker Bearing', bearing)
 
-    # Display the image.
-    cv2.imshow('image', image_annotated)
+    # Display the before and after images.
+    cv2.imshow('Raw Video', image_raw)
+    cv2.imshow('Processed Video', image_annotated)
 
     # Quit if Escape is pressed.
     if cv2.waitKey(1) == 27:
