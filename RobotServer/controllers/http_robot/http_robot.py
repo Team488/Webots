@@ -421,7 +421,7 @@ def start_zmq():
     try:
         import zmq
 
-        # Start a ZeroMQ server and define a message template.
+        # Start a ZeroMQ server.
         zmq_context = zmq.Context()
         zmq_socket = zmq_context.socket(zmq.PUB)
         zmq_socket.bind(f"tcp://0.0.0.0:{zmq_port}")

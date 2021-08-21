@@ -14,7 +14,7 @@ socket.subscribe('image')
 NetworkTables.initialize('127.0.0.1')
 visionSubsystemTable = NetworkTables.getTable('SmartDashboard/VisionSubsystem')
 
-# Optionally initialize calibration parameters.
+# Initialize calibration parameters.
 camera_matrix = np.matrix([
     [378.19332477,   0.        , 422.8684558 ],
     [  0.        , 378.08020475, 400.09320061],
