@@ -1,0 +1,116 @@
+#VRML_SIM R2022a utf8
+WorldInfo {
+}
+Viewpoint {
+  orientation 0.1956279012394106 -0.13128447600440096 -0.9718508685065386 4.673044330790547
+  position 0.08326098102900234 -0.5780425537124443 0.22555048318967577
+}
+RectangleArena {
+}
+Robot {
+  translation 0.0003506932144585575 3.0370626764904768e-09 0.04935981792808598
+  rotation -8.665838361742588e-06 0.9999999999624329 1.9266212888857525e-07 0.007013901925056331
+  children [
+    Transform {
+      translation 0 0 0.05
+      children [
+        Transform {
+          translation -0.13 0 0
+          children [
+            Hinge2Joint {
+              jointParameters HingeJointParameters {
+              }
+              jointParameters2 JointParameters {
+              }
+              device [
+                RotationalMotor {
+                  name "wheel_motor"
+                }
+              ]
+              device2 [
+                RotationalMotor {
+                  name "direction_motor"
+                }
+              ]
+              endPoint Solid {
+                translation 1.0532320523811779e-05 -4.264641932820467e-06 -2.4979609483998866e-06
+                rotation -0.6844372041074783 0.21015010198265668 -0.698127959811249 2.826733849648748
+                children [
+                  DEF Wheel Shape {
+                    appearance Appearance {
+                      material Material {
+                      }
+                    }
+                    geometry Cylinder {
+                      height 0.01
+                      radius 0.05
+                    }
+                  }
+                ]
+                name "solid(1)"
+                boundingObject USE Wheel
+                physics Physics {
+                }
+              }
+            }
+          ]
+        }
+        HingeJoint {
+          jointParameters HingeJointParameters {
+            position 1.9468799872591165
+            anchor 0.07 0 -0.02
+          }
+          device [
+            DEF motor1 RotationalMotor {
+              name "motor1"
+              acceleration 1
+            }
+          ]
+          endPoint Solid {
+            translation 0.07000006917114845 8.020098471924403e-07 -0.02001219493867326
+            rotation 0.637193365294417 -0.4335551388318329 -0.6371927156028118 2.3234028018931103
+            children [
+              DEF wheel Shape {
+                appearance PBRAppearance {
+                }
+                geometry Cylinder {
+                  height 0.02
+                  radius 0.05
+                }
+              }
+            ]
+            boundingObject USE wheel
+            physics Physics {
+            }
+          }
+        }
+        DEF body Shape {
+          appearance Appearance {
+            material Material {
+              ambientIntensity 0.3
+              diffuseColor 0.4 0.8 0.2
+            }
+          }
+          geometry Box {
+            size 0.1 0.1 0.1
+          }
+        }
+      ]
+    }
+  ]
+  boundingObject Transform {
+    translation 0 0 0.05
+    children [
+      USE body
+    ]
+  }
+  physics Physics {
+  }
+  controller "my_controller"
+}
+TexturedBackground {
+  texture "empty_office"
+}
+TexturedBackgroundLight {
+  texture "dusk"
+}
