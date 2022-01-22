@@ -29,7 +29,7 @@ PROTO SwerveWheel [
               }
             }
             Transform {
-              translation 0 %<= fields.moduleSize.value / 2 >% 0
+              translation 0 %<= -1 * fields.moduleSize.value / 2 >% 0
               children [
                 Shape {
                   appearance PBRAppearance {

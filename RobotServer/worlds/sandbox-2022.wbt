@@ -25,6 +25,16 @@ Robot {
           translation -0.13 0 0
           children [
             SwerveWheel {
+              wheelDevice [
+                RotationalMotor {
+                  name "wheel_motor"
+                }
+              ]
+              directionDevice [
+                RotationalMotor {
+                  name "direction_motor"
+                }
+              ]
             }
           ]
         }
