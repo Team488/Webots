@@ -2,7 +2,7 @@
 
 PROTO RobotWheel [
   field SFVec3f    translation 0 0 0
-  field SFRotation rotation    1 0 0 0
+  field SFRotation rotation    0 1 0 1.5708
   field SFString   name        "wheel"
   field SFFloat    height      0.0254
   field SFFloat    radius      0.0762
@@ -16,7 +16,7 @@ PROTO RobotWheel [
     rotation IS rotation
     children [
       Solid {
-        rotation 0 0 1 1.5707963268594616
+        rotation 0 1 0 0
         children [
           Shape {
             appearance PBRAppearance {
