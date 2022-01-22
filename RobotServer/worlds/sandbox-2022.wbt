@@ -2,10 +2,11 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.3074480351887706 -0.3941377203272333 0.86610112750984 4.812146684586645
-  position -0.3801463761778772 0.716195001805167 0.889347842514007
+  orientation -0.12655761720447625 0.10834735933739718 0.9860243502328623 1.72793574302832
+  position 0.38919571213926674 -1.8833989769916981 0.5677499228762422
 }
 RectangleArena {
+  floorSize 10 10
 }
 Robot {
   translation 0.0003506932144585575 3.0370626764904768e-09 0.04935981792808598
@@ -14,29 +15,72 @@ Robot {
     Transform {
       translation 0 0 0.05
       children [
+        SwerveWheel {
+          translation -0.14 -0.18 0
+          rotation 0 1 0 1.5707999999999998
+          name "wheel(4)"
+          wheelDevice [
+            RotationalMotor {
+              name "wheel_motor_fr"
+            }
+          ]
+          directionDevice [
+            RotationalMotor {
+              name "direction_motor_fr"
+            }
+          ]
+        }
+        SwerveWheel {
+          translation 0.14 0.18 0
+          rotation 0 1 0 1.5707999999999998
+          name "wheel(2)"
+          wheelDevice [
+            RotationalMotor {
+              name "wheel_motor_bl"
+            }
+          ]
+          directionDevice [
+            RotationalMotor {
+              name "direction_motor_bl"
+            }
+          ]
+        }
+        SwerveWheel {
+          translation -0.14 0.18 0
+          rotation 0 1 0 1.5707999999999998
+          name "wheel(1)"
+          wheelDevice [
+            RotationalMotor {
+              name "wheel_motor_br"
+            }
+          ]
+          directionDevice [
+            RotationalMotor {
+              name "direction_motor_br"
+            }
+          ]
+        }
+        SwerveWheel {
+          translation 0.14 -0.18 0
+          rotation 0 1 0 1.5707999999999998
+          name "wheel(3)"
+          wheelDevice [
+            RotationalMotor {
+              name "wheel_motor_fl"
+            }
+          ]
+          directionDevice [
+            RotationalMotor {
+              name "direction_motor_fl"
+            }
+          ]
+        }
         DEF body Shape {
           appearance Appearance {
           }
           geometry Box {
-            size 0.1 0.1 0.1
+            size 0.2 0.3 0.1
           }
-        }
-        Transform {
-          translation -0.13 0 0
-          children [
-            SwerveWheel {
-              wheelDevice [
-                RotationalMotor {
-                  name "wheel_motor"
-                }
-              ]
-              directionDevice [
-                RotationalMotor {
-                  name "direction_motor"
-                }
-              ]
-            }
-          ]
         }
       ]
     }
@@ -49,7 +93,7 @@ Robot {
     ]
   }
   physics Physics {
-    mass 0.5
+    mass 4
   }
   controller "swerve_test"
 }

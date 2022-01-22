@@ -12,13 +12,18 @@ timestep = int(robot.getBasicTimeStep())
 
 # You should insert a getDevice-like function in order to get the
 # instance of a device of the robot. Something like:
-wheel_motor = robot.getDevice('wheel_motor')
-direction_motor = robot.getDevice('direction_motor')
-wheel_motor.setPosition(float('inf'))
-direction_motor.setPosition(float('inf'))
+wheels = ["fl", "fr", "bl", "br"]
+wheel_motors = [robot.getDevice(f'wheel_motor_{wheel}') for wheel in wheels]
+direction_motors = [robot.getDevice(f'direction_motor_{wheel}') for wheel in wheels]
 
-wheel_motor.setVelocity(0.5)
-direction_motor.setVelocity(0.1)
+for wheel_motor in wheel_motors:
+    wheel_motor.setPosition(float('inf'))
+    wheel_motor.setVelocity(0.1)
+for direction_motor in direction_motors:
+    pass
+    #direction_motor.setPosition(float('inf'))
+    #direction_motor.setVelocity(0.1)
+
 #  ds = robot.getDevice('dsname')
 #  ds.enable(timestep)
 

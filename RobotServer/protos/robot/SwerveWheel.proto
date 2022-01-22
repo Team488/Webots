@@ -15,6 +15,7 @@ PROTO SwerveWheel [
 ]
 {
     Transform {
+      translation IS translation
       children [
         Transform {
           translation 0 0 %<= fields.radius.value + fields.moduleSize.value / 2.0 + 0.05 >%
@@ -57,7 +58,6 @@ PROTO SwerveWheel [
           device IS directionDevice
           device2 IS wheelDevice
           endPoint RobotWheel {
-              translation IS translation
               rotation IS rotation
               name IS name
               physics IS physics
