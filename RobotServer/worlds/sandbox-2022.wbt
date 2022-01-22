@@ -42,7 +42,7 @@ Robot {
                 }
               ]
               endPoint RobotWheel {
-                rotation 0 1 0 -1.5707953071795862
+                rotation 4.218952988437341e-18 -0.9999999999999999 -4.218948686730473e-18 1.5707953071795862
               }
             }
           ]
@@ -60,7 +60,7 @@ Robot {
   physics Physics {
     mass 0.5
   }
-  controller "my_controller"
+  controller "swerve_test"
 }
 TexturedBackground {
   texture "empty_office"

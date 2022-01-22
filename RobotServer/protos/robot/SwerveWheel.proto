@@ -2,7 +2,7 @@
 
 PROTO SwerveWheel [
   field SFVec3f    translation 0 0 0
-  field SFRotation rotation    1 0 0 0
+  field SFRotation rotation    0 1 0 1.5708
   field SFString   name        "wheel"
   field SFFloat    height      0.0254
   field SFFloat    radius      0.0762
@@ -17,9 +17,8 @@ PROTO SwerveWheel [
         position 0
         anchor IS translation
       }
-      jointParameters2 HingeJointParameters {
+      jointParameters2 JointParameters {
         position 0
-        anchor IS translation
       }
       device IS directionDevice
       device2 IS wheelDevice
