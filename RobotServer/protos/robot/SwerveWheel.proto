@@ -25,8 +25,22 @@ PROTO SwerveWheel [
                 metalness 0
               }
               geometry Box {
-                size 0.1 0.1 0.1
+                size %<= fields.moduleSize.value >% %<= fields.moduleSize.value >% %<= fields.moduleSize.value >%
               }
+            }
+            Transform {
+              translation 0 %<= fields.moduleSize.value / 2 >% 0
+              children [
+                Shape {
+                  appearance PBRAppearance {
+                    baseColor 1.0 1.0 1.0
+                    metalness 0
+                  }
+                  geometry Box {
+                    size %<= fields.moduleSize.value / 2 >% %<= fields.moduleSize.value / 2 >% %<= fields.moduleSize.value / 2 >%
+                  }
+                }
+              ]
             }
           ]
         }
