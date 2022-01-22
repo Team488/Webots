@@ -14,10 +14,12 @@ PROTO SwerveWheel [
 {
     Hinge2Joint {
       jointParameters HingeJointParameters {
+        axis 0 0 1
         position 0
         anchor IS translation
       }
       jointParameters2 JointParameters {
+        axis 1 0 0
         position 0
       }
       device IS directionDevice
