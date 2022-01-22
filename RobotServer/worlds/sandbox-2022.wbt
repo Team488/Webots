@@ -2,8 +2,8 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.1956279012394106 -0.13128447600440096 -0.9718508685065386 4.673044330790547
-  position 0.0830428235226671 -1.045103460726444 0.3881515676653977
+  orientation 0.23317681683371116 -0.3651383017766831 -0.9012783103275802 5.056536807171087
+  position -0.464046712837494 -0.6778692193371806 0.4689049497980074
 }
 RectangleArena {
 }
@@ -24,26 +24,7 @@ Robot {
         Transform {
           translation -0.13 0 0
           children [
-            Hinge2Joint {
-              jointParameters HingeJointParameters {
-                axis 0 0 1
-              }
-              jointParameters2 JointParameters {
-                axis 1 0 0
-              }
-              device [
-                RotationalMotor {
-                  name "direction_motor"
-                }
-              ]
-              device2 [
-                RotationalMotor {
-                  name "wheel_motor"
-                }
-              ]
-              endPoint RobotWheel {
-                rotation 4.218952988437341e-18 -0.9999999999999999 -4.218948686730473e-18 1.5707953071795862
-              }
+            SwerveWheel {
             }
           ]
         }

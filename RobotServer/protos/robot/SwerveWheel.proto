@@ -1,4 +1,5 @@
 #VRML_SIM R2022a utf8
+# template language: javascript
 
 PROTO SwerveWheel [
   field SFVec3f    translation 0 0 0
@@ -6,31 +7,51 @@ PROTO SwerveWheel [
   field SFString   name        "wheel"
   field SFFloat    height      0.0254
   field SFFloat    radius      0.0762
+  field SFFloat    moduleSize  0.1
   field MFNode {RotationalMotor{}, PositionSensor{}, Brake{}}     wheelDevice      NULL
   field MFNode {RotationalMotor{}, PositionSensor{}, Brake{}}     directionDevice      NULL
   field SFNode     physics     Physics {
   }
 ]
 {
-    Hinge2Joint {
-      jointParameters HingeJointParameters {
-        axis 0 0 1
-        position 0
-        anchor IS translation
-      }
-      jointParameters2 JointParameters {
-        axis 1 0 0
-        position 0
-      }
-      device IS directionDevice
-      device2 IS wheelDevice
-      endPoint RobotWheel {
-        translation IS translation
-        rotation IS rotation
-        name IS name
-        physics IS physics
-        height IS height
-        radius IS radius
-      }
+    Transform {
+      children [
+        Transform {
+          translation 0 0 %<= fields.radius.value + fields.moduleSize.value / 2.0 + 0.05 >%
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.1 0.1 0.1
+                metalness 0
+              }
+              geometry Box {
+                size 0.1 0.1 0.1
+              }
+            }
+          ]
+        }
+        Hinge2Joint {
+          jointParameters HingeJointParameters {
+              axis 0 0 1
+              position 0
+              anchor IS translation
+          }
+          jointParameters2 JointParameters {
+              axis 1 0 0
+              position 0
+          }
+          device IS directionDevice
+          device2 IS wheelDevice
+          endPoint RobotWheel {
+              translation IS translation
+              rotation IS rotation
+              name IS name
+              physics IS physics
+              height IS height
+              radius IS radius
+          }
+          }
+      ]
     }
+    
 }
