@@ -2,8 +2,8 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.12655761720447625 0.10834735933739718 0.9860243502328623 1.72793574302832
-  position 0.38919571213926674 -1.8833989769916981 0.5677499228762422
+  orientation -0.1872066039634165 0.024098573471286997 0.9820249213686655 2.8823696253914135
+  position 2.4722468245261777 -1.0583651361515944 1.3275501051779206
 }
 RectangleArena {
   floorSize 10 10
@@ -15,6 +15,20 @@ Robot {
     Transform {
       translation 0 0 0.05
       children [
+        Transform {
+          translation 0 0 0.15
+          children [
+            DEF body Shape {
+              appearance Appearance {
+                material Material {
+                }
+              }
+              geometry Box {
+                size 0.5 0.6 0.1
+              }
+            }
+          ]
+        }
         SwerveWheel {
           translation -0.14 -0.18 0
           rotation 0 1 0 1.5707999999999998
@@ -75,21 +89,20 @@ Robot {
             }
           ]
         }
-        DEF body Shape {
-          appearance Appearance {
-          }
-          geometry Box {
-            size 0.2 0.3 0.1
-          }
-        }
       ]
     }
   ]
   contactMaterial "body"
   boundingObject Transform {
-    translation 0 0 0.05
+    translation 0 0 0.2
     children [
-      USE body
+      DEF body Shape {
+        appearance Appearance {
+        }
+        geometry Box {
+          size 0.5 0.6 0.1
+        }
+      }
     ]
   }
   physics Physics {

@@ -18,11 +18,10 @@ direction_motors = [robot.getDevice(f'direction_motor_{wheel}') for wheel in whe
 
 for wheel_motor in wheel_motors:
     wheel_motor.setPosition(float('inf'))
-    wheel_motor.setVelocity(0.1)
+    wheel_motor.setVelocity(2)
 for direction_motor in direction_motors:
-    pass
-    #direction_motor.setPosition(float('inf'))
-    #direction_motor.setVelocity(0.1)
+    direction_motor.setPosition(float('inf'))
+    direction_motor.setVelocity(0.1)
 
 #  ds = robot.getDevice('dsname')
 #  ds.enable(timestep)
