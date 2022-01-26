@@ -1,0 +1,70 @@
+#VRML_SIM R2022a utf8
+# template language: javascript
+
+PROTO SwerveWheel [
+  field SFVec3f    translation 0 0 0
+  field SFRotation rotation    0 1 0 1.5708
+  field SFString   name        "wheel"
+  field SFFloat    height      0.0254
+  field SFFloat    radius      0.0762
+  field SFFloat    moduleSize  0.1
+  field MFNode {RotationalMotor{}, PositionSensor{}, Brake{}}     wheelDevice      NULL
+  field MFNode {RotationalMotor{}, PositionSensor{}, Brake{}}     directionDevice      NULL
+  field SFNode     physics     Physics {
+  }
+]
+{
+    Transform {
+      translation IS translation
+      children [
+        Transform {
+          translation 0 0 %<= fields.radius.value + fields.moduleSize.value / 2.0 >%
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.1 0.1 0.1
+                metalness 0
+              }
+              geometry Box {
+                size %<= fields.moduleSize.value >% %<= fields.moduleSize.value >% %<= fields.moduleSize.value >%
+              }
+            }
+            Transform {
+              translation 0 %<= -1 * fields.moduleSize.value / 2 >% 0
+              children [
+                Shape {
+                  appearance PBRAppearance {
+                    baseColor 1.0 1.0 1.0
+                    metalness 0
+                  }
+                  geometry Box {
+                    size %<= fields.moduleSize.value / 2 >% %<= fields.moduleSize.value / 2 >% %<= fields.moduleSize.value / 2 >%
+                  }
+                }
+              ]
+            }
+          ]
+        }
+        Hinge2Joint {
+          jointParameters HingeJointParameters {
+              axis 0 0 1
+              position 0
+          }
+          jointParameters2 JointParameters {
+              axis 1 0 0
+              position 0
+          }
+          device IS directionDevice
+          device2 IS wheelDevice
+          endPoint RobotWheel {
+              rotation IS rotation
+              name IS name
+              physics IS physics
+              height IS height
+              radius IS radius
+          }
+          }
+      ]
+    }
+    
+}

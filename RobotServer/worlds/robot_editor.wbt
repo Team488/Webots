@@ -1,13 +1,13 @@
-#VRML_SIM R2021b utf8
+#VRML_SIM R2022a utf8
 WorldInfo {
 }
 Viewpoint {
   fieldOfView 1.0472
-  orientation 0.7879733411513985 -0.3156187788940154 -0.5286613283040025 1.3347495834610126
-  position -3.742764713440753 -3.3128345846145377 3.6128805180383554
+  orientation -0.1883843161986256 0.4878510267880891 0.8523571581632804 0.9118835046626917
+  position -7.774813511967339 -7.423913978813074 6.4982469192172605
 }
 Solid {
-  rotation 1 0 0 1.57079632679
+  rotation 1 0 0 0
   children [
     Shape {
       appearance PBRAppearance {
@@ -49,15 +49,20 @@ DEF RobotTemplate Robot {
     }
     Camera {
       translation 0 0.4953 0.5
-      rotation 1 0 0 1.5708
+      rotation 1.8366025517039032e-06 -1.836602551703903e-06 0.9999999999966269 1.5707963267982696
       children [
-        Shape {
-          appearance PBRAppearance {
-            baseColor 0 0 0
-          }
-          geometry Box {
-            size 0.02 0.02 0.02
-          }
+        Transform {
+          rotation 0.5773502691896258 -0.5773502691896258 -0.5773502691896258 2.0943951023931953
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0 0 0
+              }
+              geometry Box {
+                size 0.02 0.02 0.02
+              }
+            }
+          ]
         }
       ]
       width 848
@@ -84,17 +89,20 @@ DEF RobotTemplate Robot {
     }
     Track {
       translation -0.3683 0 0.0712
-      rotation -0.5773509358554485 0.5773489358556708 0.5773509358554485 -2.0944
+      rotation 3.4049821133273683e-06 1.7320516149939086e-06 -0.9999999999927031 1.570797999734091
       children [
         TrackRobotWheel {
           position -0.35 0.004
+          rotation -0.9999999999999999 0 0 3.14158898037044
           name "FL wheel"
         }
         TrackRobotWheel {
           position 0.35 0.004
+          rotation -0.9999999999999999 0 0 3.14158898037044
           name "BL wheel"
         }
         TrackRobotWheel {
+          rotation -0.9999999999999999 0 0 3.14158898037044
           name "CL wheel"
         }
       ]
@@ -102,8 +110,8 @@ DEF RobotTemplate Robot {
       boundingObject Group {
         children [
           Transform {
-            translation -0.35 0.004 0
-            rotation 1 0 0 1.5708
+            translation -0.35 2.4492935982947063e-19 0.004
+            rotation 1 0 0 1.570799999984025
             children [
               Cylinder {
                 height 0.0254
@@ -112,8 +120,8 @@ DEF RobotTemplate Robot {
             ]
           }
           Transform {
-            translation 0.35 0.004 0
-            rotation 1 0 0 1.5708
+            translation 0.35 2.4492935982947063e-19 0.004
+            rotation 1 0 0 1.570799999984025
             children [
               Cylinder {
                 height 0.0254
@@ -122,7 +130,7 @@ DEF RobotTemplate Robot {
             ]
           }
           Transform {
-            rotation 1 0 0 1.5708
+            rotation 1 0 0 1.570799999984025
             children [
               Cylinder {
                 height 0.0254
@@ -155,17 +163,20 @@ DEF RobotTemplate Robot {
     }
     Track {
       translation 0.3683 0 0.0712
-      rotation -0.5773509358554485 0.5773489358556708 0.5773509358554485 -2.0944
+      rotation 3.4049821133273683e-06 1.7320516149939086e-06 -0.9999999999927031 1.570797999734091
       children [
         TrackRobotWheel {
           position -0.35 0.004
+          rotation -0.9999999999999999 0 0 3.14158898037044
           name "FR wheel"
         }
         TrackRobotWheel {
           position 0.35 0.004
+          rotation -0.9999999999999999 0 0 3.14158898037044
           name "BR wheel"
         }
         TrackRobotWheel {
+          rotation -0.9999999999999999 0 0 3.14158898037044
           name "CR wheel"
         }
       ]
@@ -173,8 +184,8 @@ DEF RobotTemplate Robot {
       boundingObject Group {
         children [
           Transform {
-            translation -0.35 0.004 0
-            rotation 1 0 0 1.5708
+            translation -0.35 2.4492935982947063e-19 0.004
+            rotation 1 0 0 1.570799999984025
             children [
               Cylinder {
                 height 0.0254
@@ -183,8 +194,8 @@ DEF RobotTemplate Robot {
             ]
           }
           Transform {
-            translation 0.35 0.004 0
-            rotation 1 0 0 1.5708
+            translation 0.35 2.4492935982947063e-19 0.004
+            rotation 1 0 0 1.570799999984025
             children [
               Cylinder {
                 height 0.0254
@@ -193,7 +204,7 @@ DEF RobotTemplate Robot {
             ]
           }
           Transform {
-            rotation 1 0 0 1.5708
+            rotation 1 0 0 1.570799999984025
             children [
               Cylinder {
                 height 0.0254
