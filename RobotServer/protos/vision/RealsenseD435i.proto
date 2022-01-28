@@ -1,0 +1,83 @@
+#VRML_OBJ R2022a utf8
+
+PROTO RealsenseD435i [
+  field SFString   name        "realsenseD435i"
+  field SFVec3f    translation 0 0 0
+  field SFRotation rotation    1 0 0 0
+]
+{
+  Solid {
+    name IS name
+    translation IS translation
+    rotation IS rotation
+    children [
+      Camera {
+        name "realsenseD435iColor"
+        width 960
+        height 540
+        fieldOfView 1.20428
+      }
+      RangeFinder {
+        name "realsenseD435iDepth"
+        width 848
+        height 480
+        fieldOfView 1.51844
+        minRange 0.28
+        maxRange 3.0
+      }
+      InertialUnit {
+        name "realsenseD435iColorImu"
+      }
+      Shape {
+        geometry Box {
+          size 0.025 0.065 0.025
+        }
+        appearance Appearance {
+          material Material {
+            diffuseColor 0.6 0.6 0.6
+            shininess 1
+          }
+        }
+      }
+      Transform {
+        translation 0 0.0325 0
+        rotation 0 1 0 1.5707963268594616
+        children [
+          Shape {
+            geometry Cylinder {
+              height 0.025
+              radius 0.0125
+            }
+            appearance Appearance {
+              material Material {
+                diffuseColor 0.6 0.6 0.6
+                shininess 1
+              }
+            }
+          }
+        ]
+      }
+      Transform {
+        translation 0 -0.0325 0
+        rotation 0 1 0 1.5707963268594616
+        children [
+          Shape {
+            geometry Cylinder {
+              height 0.025
+              radius 0.0125
+            }
+            appearance Appearance {
+              material Material {
+                diffuseColor 0.6 0.6 0.6
+                shininess 1
+              }
+            }
+          }
+        ]
+      }
+    ]
+    boundingObject Box {
+      size 0.025 0.090 0.025
+    }
+  }
+}

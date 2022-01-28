@@ -431,9 +431,9 @@ def start_zmq():
         camera_depth = 4
         message = [
             b"image",
-            camera.getHeight().to_bytes(4, byteorder='big'),
-            camera.getWidth().to_bytes(4, byteorder='big'),
-            camera_depth.to_bytes(4, byteorder='big'),
+            camera.getHeight().to_bytes(4, byteorder='little'),
+            camera.getWidth().to_bytes(4, byteorder='little'),
+            camera_depth.to_bytes(4, byteorder='little'),
             None
         ]
 
