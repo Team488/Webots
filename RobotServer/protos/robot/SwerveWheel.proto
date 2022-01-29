@@ -9,7 +9,7 @@ PROTO SwerveWheel [
   field SFFloat    radius      0.0762
   field SFFloat    moduleSize  0.1
   field MFNode {RotationalMotor{}, PositionSensor{}, Brake{}}     wheelDevice      NULL
-  field MFNode {RotationalMotor{}, PositionSensor{}, Brake{}}     directionDevice      NULL
+  field MFNode {RotationalMotor{}, PositionSensor{}, Brake{}}     steeringDevice      NULL
   field SFNode     physics     Physics {
   }
 ]
@@ -54,7 +54,7 @@ PROTO SwerveWheel [
               axis 1 0 0
               position 0
           }
-          device IS directionDevice
+          device IS steeringDevice
           device2 IS wheelDevice
           endPoint RobotWheel {
               rotation IS rotation
