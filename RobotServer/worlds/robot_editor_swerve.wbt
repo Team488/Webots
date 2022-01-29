@@ -3,8 +3,8 @@ WorldInfo {
 }
 Viewpoint {
   fieldOfView 1.0472
-  orientation 0.1335989725709886 0.6865467987082147 -0.7147060988346737 0.4140764808983421
-  position -2.078399771989314 0.6374999833634728 0.6393049907506315
+  orientation 0.31788190441929526 -0.010004433246593001 -0.9480775317231057 3.1835087364415515
+  position 2.844336351998166 0.7996407403526403 2.359561596027475
 }
 Solid {
   rotation 1 0 0 0
@@ -40,6 +40,34 @@ DEF RobotTemplate Robot {
   translation 1.8087759141732468e-10 1.0986102185610335e-07 -0.001363378486078759
   rotation 0.9999996046133542 -1.0545962728517921e-05 0.0008891917215829847 0.0003998599798733738
   children [
+    Transform {
+      translation 0 0 1.04
+      children [
+        HingeJoint {
+          jointParameters HingeJointParameters {
+          }
+          device [
+            RotationalMotor {
+            }
+          ]
+          endPoint Solid {
+            translation 0 0 0.15
+            rotation 1 0 0 0
+            children [
+              Shape {
+                appearance Appearance {
+                  material Material {
+                  }
+                }
+                geometry Box {
+                  size 0.1 0.1 0.3
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
     DEF s_front_left SwerveWheel {
       translation 0.37 -0.35 0.07
       wheelDevice [
@@ -50,7 +78,7 @@ DEF RobotTemplate Robot {
           name "Motor1 # front left wheel"
         }
       ]
-      directionDevice [
+      steeringDevice [
         PositionSensor {
           name "CAN11 #"
         }
@@ -70,7 +98,7 @@ DEF RobotTemplate Robot {
           name "Motor2 # front right wheel"
         }
       ]
-      directionDevice [
+      steeringDevice [
         PositionSensor {
           name "CAN12 #"
         }
@@ -90,7 +118,7 @@ DEF RobotTemplate Robot {
           name "Motor3 # back left wheel"
         }
       ]
-      directionDevice [
+      steeringDevice [
         PositionSensor {
           name "CAN13 #"
         }
@@ -110,7 +138,7 @@ DEF RobotTemplate Robot {
           name "Motor4 # back right wheel"
         }
       ]
-      directionDevice [
+      steeringDevice [
         PositionSensor {
           name "CAN14 #"
         }
@@ -151,14 +179,14 @@ DEF RobotTemplate Robot {
       name "IMU1"
     }
     Transform {
-      translation 0 0 0.5
+      translation 0 0 0.2
       children [
         Shape {
           appearance PBRAppearance {
             metalness 0
           }
           geometry Box {
-            size 0.7112 0.9652 0.7
+            size 0.9 1.1 0.1
           }
         }
       ]
