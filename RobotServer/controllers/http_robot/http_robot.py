@@ -209,6 +209,7 @@ def build_device_map(robot):
     device_map = defaultdict(dict)
 
     device_count = robot.getNumberOfDevices()
+    print(f"Found {device_count} devices on robot")
     for i in range(device_count):
         device = robot.getDeviceByIndex(i)
         device_type = device.getNodeType()
@@ -248,8 +249,12 @@ def build_device_map(robot):
         elif device_type == Node.GYRO:
             device.enable(timestep)
             device_map["Gyros"][device_id] = device
+        else:
+            print(
+                f"Found unknown device of type {device_type} with ID {device_id} not mapped"
+            )
 
-        return device_map
+    return device_map
 
 
 def get_device_id(device: str):
@@ -481,7 +486,9 @@ def update_motors():
 
 
 def start_flask():
-    global flask_app, port
+    port
+
+    flask_app = create_app()
 
     print(
         f"[HttpRobot{robotId}] Starting flask server on http://{get_public_ip()}:{port}",
@@ -512,6 +519,9 @@ def start_zmq():
         zmq_socket.bind(f"tcp://0.0.0.0:{zmq_port}")
 
         # Get the camera, and define a message template to send the image.
+        if not device_map["Cameras"]:
+            print("No camera found, skipping zmq setup")
+            return
         camera = next(iter(device_map["Cameras"].values()))
         camera_depth = 4
         message = [
@@ -538,7 +548,6 @@ def start_zmq():
 
 if __name__ == "__main__":
     # Create the robot
-    flask_app = create_app()
     robot = Supervisor()
     timestep = int(robot.getBasicTimeStep())
     device_map = build_device_map(robot)
