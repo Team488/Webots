@@ -1,8 +1,8 @@
-#VRML_SIM R2021a utf8
+#VRML_SIM R2022a utf8
 
 PROTO MotorizedRobotWheel [
   field SFVec3f    translation 0 0 0
-  field SFRotation rotation    1 0 0 0
+  field SFRotation rotation    0 1 0 1.5708
   field SFString   name        "wheel"
   field SFFloat    height      0.0254
   field SFFloat    radius      0.0762

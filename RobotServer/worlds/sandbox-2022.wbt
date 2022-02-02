@@ -1,0 +1,118 @@
+#VRML_SIM R2022a utf8
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.1872066039634165 0.024098573471286997 0.9820249213686655 2.8823696253914135
+  position 2.4722468245261777 -1.0583651361515944 1.3275501051779206
+}
+RectangleArena {
+  floorSize 10 10
+}
+Robot {
+  translation 0.0003506932144585575 3.0370626764904768e-09 0.04935981792808598
+  rotation -8.665838361742588e-06 0.9999999999624329 1.9266212888857525e-07 0.007013901925056331
+  children [
+    Transform {
+      translation 0 0 0.05
+      children [
+        Transform {
+          translation 0 0 0.15
+          children [
+            DEF body Shape {
+              appearance Appearance {
+                material Material {
+                }
+              }
+              geometry Box {
+                size 0.5 0.6 0.1
+              }
+            }
+          ]
+        }
+        SwerveWheel {
+          translation -0.14 -0.18 0
+          rotation 0 1 0 1.5707999999999998
+          name "wheel(4)"
+          wheelDevice [
+            RotationalMotor {
+              name "wheel_motor_fr"
+            }
+          ]
+          directionDevice [
+            RotationalMotor {
+              name "direction_motor_fr"
+            }
+          ]
+        }
+        SwerveWheel {
+          translation 0.14 0.18 0
+          rotation 0 1 0 1.5707999999999998
+          name "wheel(2)"
+          wheelDevice [
+            RotationalMotor {
+              name "wheel_motor_bl"
+            }
+          ]
+          directionDevice [
+            RotationalMotor {
+              name "direction_motor_bl"
+            }
+          ]
+        }
+        SwerveWheel {
+          translation -0.14 0.18 0
+          rotation 0 1 0 1.5707999999999998
+          name "wheel(1)"
+          wheelDevice [
+            RotationalMotor {
+              name "wheel_motor_br"
+            }
+          ]
+          directionDevice [
+            RotationalMotor {
+              name "direction_motor_br"
+            }
+          ]
+        }
+        SwerveWheel {
+          translation 0.14 -0.18 0
+          rotation 0 1 0 1.5707999999999998
+          name "wheel(3)"
+          wheelDevice [
+            RotationalMotor {
+              name "wheel_motor_fl"
+            }
+          ]
+          directionDevice [
+            RotationalMotor {
+              name "direction_motor_fl"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+  contactMaterial "body"
+  boundingObject Transform {
+    translation 0 0 0.2
+    children [
+      DEF body Shape {
+        appearance Appearance {
+        }
+        geometry Box {
+          size 0.5 0.6 0.1
+        }
+      }
+    ]
+  }
+  physics Physics {
+    mass 4
+  }
+  controller "swerve_test"
+}
+TexturedBackground {
+  texture "empty_office"
+}
+TexturedBackgroundLight {
+  texture "dusk"
+}
