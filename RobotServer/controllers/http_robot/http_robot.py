@@ -14,9 +14,6 @@ import threading
 import time
 import traceback
 
-# TODO: use argparse to clean this up
-robotId = int(sys.argv[1])
-port = int(sys.argv[2])
 
 # flask log level
 log = logging.getLogger("werkzeug")
@@ -547,6 +544,9 @@ def start_zmq():
 
 
 if __name__ == "__main__":
+    # TODO: use argparse to clean this up
+    robotId = int(sys.argv[1])
+    port = int(sys.argv[2])
     # Create the robot
     robot = Supervisor()
     timestep = int(robot.getBasicTimeStep())
