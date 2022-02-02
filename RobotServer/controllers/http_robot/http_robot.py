@@ -19,9 +19,6 @@ import traceback
 log = logging.getLogger("werkzeug")
 log.setLevel(logging.ERROR)
 
-line_map = {}
-motor_requests = {}
-
 
 class MotorModes(enum.Enum):
     POWER = 0
@@ -29,7 +26,7 @@ class MotorModes(enum.Enum):
     POSITION = 2
 
 
-def create_app():
+def create_app(device_map, motor_requests, line_map):
     app = Flask(__name__)
 
     @app.route("/ping")
@@ -464,7 +461,7 @@ def draw_circle(
         point_field.setMFVec3f(i, point)
 
 
-def update_motors():
+def update_motors(device_map, motor_requests):
     for motor_id, request_motor_values in motor_requests.items():
         motor = device_map["Motors"][motor_id]
         value = request_motor_values.get("val")
@@ -482,10 +479,11 @@ def update_motors():
             raise Exception(f"Unhandled motor mode {mode}")
 
 
-def start_flask():
-    port
+def start_flask(device_map, line_map, motor_requests):
 
-    flask_app = create_app()
+    flask_app = create_app(
+        device_map=device_map, line_map=line_map, motor_requests=motor_requests
+    )
 
     print(
         f"[HttpRobot{robotId}] Starting flask server on http://{get_public_ip()}:{port}",
@@ -549,16 +547,18 @@ if __name__ == "__main__":
     port = int(sys.argv[2])
     # Create the robot
     robot = Supervisor()
-    timestep = int(robot.getBasicTimeStep())
     device_map = build_device_map(robot)
-    threading.Thread(target=start_flask).start()
+    motor_requests = {}
+    line_map = {}
+    timestep = int(robot.getBasicTimeStep())
+    threading.Thread(target=lambda: start_flask(device_map, line_map, motor_requests)).start()
     threading.Thread(target=start_zmq).start()
 
     # Run the simulation loop
     print("Starting null op simulation loop")
     while robot.step(timestep) != -1:
         # motor updates need to happen every tick so things like raw torques are constantly applied
-        update_motors()
+        update_motors(device_map, motor_requests)
         # the sleep creates space for the webserver to run more responsively
         time.sleep(timestep / 1000)
     print("Finished")
