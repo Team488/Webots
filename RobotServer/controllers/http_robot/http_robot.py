@@ -36,7 +36,6 @@ def create_app(device_map, motor_requests, line_map):
 
     @app.route("/motors", methods=["PUT"])
     def put_motors():
-        global device_map
         request_data = request.json
         for request_motor_values in request_data["motors"]:
             request_motor_id = request_motor_values.get("id")
@@ -199,7 +198,7 @@ def create_app(device_map, motor_requests, line_map):
     return app
 
 
-def build_device_map(robot):
+def build_device_map(robot, timestep):
     device_map = defaultdict(dict)
 
     device_count = robot.getNumberOfDevices()
@@ -547,11 +546,13 @@ if __name__ == "__main__":
     port = int(sys.argv[2])
     # Create the robot
     robot = Supervisor()
-    device_map = build_device_map(robot)
+    timestep = int(robot.getBasicTimeStep())
+    device_map = build_device_map(robot, timestep)
     motor_requests = {}
     line_map = {}
-    timestep = int(robot.getBasicTimeStep())
-    threading.Thread(target=lambda: start_flask(device_map, line_map, motor_requests)).start()
+    threading.Thread(
+        target=lambda: start_flask(device_map, line_map, motor_requests)
+    ).start()
     threading.Thread(target=start_zmq).start()
 
     # Run the simulation loop
