@@ -42,3 +42,27 @@ def test_put_motors__default_set(test_app):
 
     assert response.status_code == 200
     assert test_app.motor_requests[motor_id] == {"id": motor_id, "value": 1.0}
+
+
+def test_put_motors__get_position_sensor(test_app):
+    position_sensor_id = "CAN1"
+    test_app.device_map["PositionSensors"][position_sensor_id] = Mock(
+        getName=Mock(return_value=position_sensor_id), getValue=Mock(return_value=100)
+    )
+
+    response = test_app.test_client.put(
+        "/motors",
+        data=json.dumps({"motors": []}),
+        content_type="application/json",
+    )
+
+    print(response.get_data(as_text=True))
+    response_data = json.loads(response.get_data(as_text=True))
+
+    assert response.status_code == 200
+    assert response_data["Sensors"] == [
+        {
+            "ID": position_sensor_id,
+            "Payload": {"EncoderTicks": 100},
+        }
+    ]
