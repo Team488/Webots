@@ -11,11 +11,11 @@ def get_world_pose(robot) -> dict:
 
     # return exact robot world pose for debugging
     robot_node = robot.getSelf()
-    position = robot_node.getPosition()
-    rotation = robot_node.getOrientation()
-    yaw = math.degrees(math.atan2(rotation[0], rotation[1])) % 360
+    pose = robot_node.getPose()
+    position = (pose[3], pose[7], pose[11])
+    yaw = math.degrees(math.atan2(pose[0], pose[1])) % 360
 
-    return {"Position": 0, "Yaw": 0, "Time": time}
+    return {"Position": position, "Yaw": yaw, "Time": time}
 
 
 def get_sensors_data(device_map, robot) -> list:
