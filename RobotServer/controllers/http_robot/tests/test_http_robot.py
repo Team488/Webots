@@ -1,6 +1,8 @@
 import json
 from unittest.mock import Mock
 
+from pytest import mark
+
 from http_robot import create_app
 
 
@@ -44,10 +46,20 @@ def test_put_motors__default_set(test_app):
     assert test_app.motor_requests[motor_id] == {"id": motor_id, "value": 1.0}
 
 
-def test_put_motors__get_position_sensor(test_app):
-    position_sensor_id = "CAN1"
-    test_app.device_map["PositionSensors"][position_sensor_id] = Mock(
-        getName=Mock(return_value=position_sensor_id), getValue=Mock(return_value=100)
+@mark.parametrize(
+    "sensor_type, payload_name, payload_value",
+    [
+        ("PositionSensors", "EncoderTicks", 100),
+        ("BumperTouchSensors", "Triggered", True),
+        ("DistanceSensors", "Distance", 100.0),
+    ],
+)
+def test_put_motors__get_basic_sensor(
+    sensor_type, payload_name, payload_value, test_app
+):
+    sensor_id = "CAN1"
+    test_app.device_map[sensor_type][sensor_id] = Mock(
+        getName=Mock(return_value=sensor_id), getValue=Mock(return_value=payload_value)
     )
 
     response = test_app.test_client.put(
@@ -62,7 +74,7 @@ def test_put_motors__get_position_sensor(test_app):
     assert response.status_code == 200
     assert response_data["Sensors"] == [
         {
-            "ID": position_sensor_id,
-            "Payload": {"EncoderTicks": 100},
+            "ID": sensor_id,
+            "Payload": {payload_name: payload_value},
         }
     ]
