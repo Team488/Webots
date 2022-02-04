@@ -2,7 +2,7 @@ import math
 import itertools
 from itertools import zip_longest
 
-from device_map import get_device_id
+from robot.device_map import get_device_id
 
 
 def get_world_pose(robot) -> dict:
