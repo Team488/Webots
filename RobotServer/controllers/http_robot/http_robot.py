@@ -1,10 +1,4 @@
 from typing import List
-from collections import defaultdict
-from controller import Node, Supervisor, TouchSensor
-from flask import Flask, request
-
-import enum
-import itertools
 import json
 import logging
 import math
@@ -14,19 +8,17 @@ import threading
 import time
 import traceback
 
-from motor_requests import apply_motor_requests
-from sensors import get_sensors_data
+from controller import Supervisor
+from flask import Flask, request
+
+from device_map import build_device_map
+from motor_requests import apply_motor_requests, update_motors
+from sensors import get_sensors_data, get_world_pose
 
 
 # flask log level
 log = logging.getLogger("werkzeug")
 log.setLevel(logging.ERROR)
-
-
-class MotorModes(enum.Enum):
-    POWER = 0
-    VELOCITY = 1
-    POSITION = 2
 
 
 def create_app(device_map, motor_requests, robot):
@@ -45,20 +37,14 @@ def create_app(device_map, motor_requests, robot):
         # return sensor data
         sensor_data = get_sensors_data(device_map, robot)
 
-        # # return exact robot world pose for debugging
-        # robot_node = robot.getSelf()
-        # position = robot_node.getPosition()
-        # rotation = robot_node.getOrientation()
-        # yaw = math.degrees(math.atan2(rotation[0], rotation[1])) % 360
+        world_pose = get_world_pose(robot)
 
-        # simulation time is reported in seconds
-        time = robot.getTime()
         return json.dumps(
             {
                 "Sensors": sensor_data,
                 # "WorldPose": {"Position": position, "Yaw": yaw, "Time": time},
                 # Some static fake data to not break the api
-                "WorldPose": {"Position": 0, "Yaw": 0, "Time": time},
+                "WorldPose": world_pose,
             }
         )
 
@@ -326,24 +312,6 @@ def draw_circle(
             center[2],
         ]
         point_field.setMFVec3f(i, point)
-
-
-def update_motors(device_map, motor_requests):
-    for motor_id, request_motor_values in motor_requests.items():
-        motor = device_map["Motors"][motor_id]
-        value = request_motor_values.get("val")
-        mode = MotorModes[request_motor_values.get("mode", "velocity").upper()]
-        if mode == MotorModes.VELOCITY:
-            # this is required to renable velocity PID in case we were last on a different mode. A fancier version would latch
-            # on changes to the mode and only set it then.
-            motor.setPosition(float("inf"))
-            motor.setVelocity(float(value * motor.getMaxVelocity()))
-        elif mode == MotorModes.POSITION:
-            motor.setPosition(float(value))
-        elif mode == MotorModes.POWER:
-            motor.setForce(float(value * motor.getMaxTorque()))
-        else:
-            raise Exception(f"Unhandled motor mode {mode}")
 
 
 def start_flask(device_map, motor_requests, robot):

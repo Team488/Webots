@@ -1,5 +1,7 @@
 from collections import defaultdict
 
+from controller import Node, TouchSensor
+
 
 def get_device_id(device) -> str:
     return device.getName().split("#")[0].strip()

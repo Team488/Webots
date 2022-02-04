@@ -1,7 +1,21 @@
+import math
 import itertools
 from itertools import zip_longest
 
 from device_map import get_device_id
+
+
+def get_world_pose(robot) -> dict:
+    # simulation time is reported in seconds
+    time = robot.getTime()
+
+    # return exact robot world pose for debugging
+    robot_node = robot.getSelf()
+    position = robot_node.getPosition()
+    rotation = robot_node.getOrientation()
+    yaw = math.degrees(math.atan2(rotation[0], rotation[1])) % 360
+
+    return {"Position": 0, "Yaw": 0, "Time": time}
 
 
 def get_sensors_data(device_map, robot) -> list:
