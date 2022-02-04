@@ -3,7 +3,7 @@ from unittest.mock import Mock
 
 from pytest import mark
 
-from http_robot import create_app
+from flask_app import create_app
 
 
 def test_ping(test_app):

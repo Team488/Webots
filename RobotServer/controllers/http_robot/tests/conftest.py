@@ -9,7 +9,7 @@ FlaskApp = collections.namedtuple(
 
 @pytest.fixture
 def test_app():
-    from http_robot import create_app
+    from flask_app import create_app
 
     motor_requests = {}
     device_map = collections.defaultdict(dict)
