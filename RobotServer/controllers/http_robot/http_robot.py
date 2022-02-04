@@ -119,7 +119,7 @@ def put_motors():
                 "Roll": imu.getRollPitchYaw()[2],
                 "Pitch": imu.getRollPitchYaw()[1],
                 "Yaw": imu.getRollPitchYaw()[0],
-                "YawVelocity" : gyro.getValues()[2] if gyro else ""
+                "YawVelocity" : gyro.getValues()[2] if gyro else 0
             }
         }
         for imu, gyro in zip_longest(device_map["IMUs"].values(), device_map["Gyros"].values())
