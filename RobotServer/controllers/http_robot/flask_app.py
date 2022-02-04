@@ -44,8 +44,6 @@ def create_app(device_map, motor_requests, robot):
         return json.dumps(
             {
                 "Sensors": sensor_data,
-                # "WorldPose": {"Position": position, "Yaw": yaw, "Time": time},
-                # Some static fake data to not break the api
                 "WorldPose": world_pose,
             }
         )
