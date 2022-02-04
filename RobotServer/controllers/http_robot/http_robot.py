@@ -26,7 +26,7 @@ class MotorModes(enum.Enum):
     POSITION = 2
 
 
-def create_app(device_map, motor_requests, line_map):
+def create_app(device_map, motor_requests, robot):
     app = Flask(__name__)
 
     @app.route("/ping")
@@ -115,11 +115,11 @@ def create_app(device_map, motor_requests, line_map):
             )
         ]
 
-        # return exact robot world pose for debugging
-        robot_node = robot.getSelf()
-        position = robot_node.getPosition()
-        rotation = robot_node.getOrientation()
-        yaw = math.degrees(math.atan2(rotation[0], rotation[1])) % 360
+        # # return exact robot world pose for debugging
+        # robot_node = robot.getSelf()
+        # position = robot_node.getPosition()
+        # rotation = robot_node.getOrientation()
+        # yaw = math.degrees(math.atan2(rotation[0], rotation[1])) % 360
 
         # simulation time is reported in seconds
         time = robot.getTime()
@@ -134,7 +134,7 @@ def create_app(device_map, motor_requests, line_map):
                         imu_sensor_values,
                     )
                 ),
-                "WorldPose": {"Position": position, "Yaw": yaw, "Time": time},
+                # "WorldPose": {"Position": position, "Yaw": yaw, "Time": time},
             }
         )
 
@@ -198,7 +198,7 @@ def create_app(device_map, motor_requests, line_map):
     return app
 
 
-def build_device_map(robot, timestep):
+def build_device_map(robot, timestep) -> dict:
     device_map = defaultdict(dict)
 
     device_count = robot.getNumberOfDevices()
@@ -478,10 +478,10 @@ def update_motors(device_map, motor_requests):
             raise Exception(f"Unhandled motor mode {mode}")
 
 
-def start_flask(device_map, line_map, motor_requests):
+def start_flask(device_map, motor_requests, robot):
 
     flask_app = create_app(
-        device_map=device_map, line_map=line_map, motor_requests=motor_requests
+        device_map=device_map, motor_requests=motor_requests, robot=robot
     )
 
     print(
@@ -551,7 +551,7 @@ if __name__ == "__main__":
     motor_requests = {}
     line_map = {}
     threading.Thread(
-        target=lambda: start_flask(device_map, line_map, motor_requests)
+        target=lambda: start_flask(device_map, motor_requests, robot)
     ).start()
     threading.Thread(target=start_zmq).start()
 
