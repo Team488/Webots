@@ -119,7 +119,7 @@ def put_motors():
                 "Roll": imu.getRollPitchYaw()[2],
                 "Pitch": imu.getRollPitchYaw()[1],
                 "Yaw": imu.getRollPitchYaw()[0],
-                "YawVelocity" : gyro.getValues()[2]
+                "YawVelocity" : gyro.getValues()[2] if gyro else ""
             }
         }
         for imu, gyro in zip_longest(device_map["IMUs"].values(), device_map["Gyros"].values())
@@ -127,9 +127,9 @@ def put_motors():
 
     # return exact robot world pose for debugging
     robot_node = robot.getSelf()
-    position = robot_node.getPosition()
-    rotation = robot_node.getOrientation()
-    yaw = math.degrees(math.atan2(rotation[0], rotation[1])) % 360
+    pose = robot_node.getPose()
+    position = (pose[3], pose[7], pose[11])
+    yaw = math.degrees(math.atan2(pose[0], pose[1])) % 360
 
     # simulation time is reported in seconds
     time = robot.getTime()
