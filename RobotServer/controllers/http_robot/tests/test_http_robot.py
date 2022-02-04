@@ -78,3 +78,37 @@ def test_put_motors__get_basic_sensor(
             "Payload": {payload_name: payload_value},
         }
     ]
+
+
+def test_put_motors__get_imu(test_app):
+    imu_id = "imu_id"
+    test_app.device_map["IMUs"][imu_id] = Mock(
+        getName=Mock(return_value=imu_id),
+        getRollPitchYaw=Mock(return_value=[-0.5, 0.5, 1.5]),
+    )
+    test_app.device_map["Gyros"]["gyro_id"] = Mock(
+        getName=Mock(return_value="gyro_id"),
+        getValues=Mock(return_value=[-1.0, 0.1, 1.0]),
+    )
+
+    response = test_app.test_client.put(
+        "/motors",
+        data=json.dumps({"motors": []}),
+        content_type="application/json",
+    )
+
+    print(response.get_data(as_text=True))
+    response_data = json.loads(response.get_data(as_text=True))
+
+    assert response.status_code == 200
+    assert response_data["Sensors"] == [
+        {
+            "ID": imu_id,
+            "Payload": {
+                "Roll": 1.5,
+                "Pitch": 0.5,
+                "Yaw": -0.5,
+                "YawVelocity": 1.0,
+            },
+        }
+    ]
