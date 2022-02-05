@@ -12,21 +12,21 @@ PROTO RealsenseD435i [
     rotation IS rotation
     children [
       Camera {
-        name "realsenseD435iColor"
+        name "rsD435iColor"
         width 960
         height 540
         fieldOfView 1.20428
       }
       RangeFinder {
-        name "realsenseD435iDepth"
+        name "rsD435iDepth"
         width 848
         height 480
         fieldOfView 1.51844
-        minRange 0.28
-        maxRange 3.0
+        minRange 0.29
+        maxRange 10.0
       }
       InertialUnit {
-        name "realsenseD435iColorImu"
+        name "rsD435iImu"
       }
       Shape {
         geometry Box {

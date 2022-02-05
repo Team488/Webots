@@ -88,7 +88,7 @@ DEF RobotTemplate Robot {
     }
     Camera {
       translation 0 0.4953 0.5
-      rotation 1.8366025517039032e-06 -1.836602551703903e-06 0.9999999999966269 1.5707963267982696
+      rotation 0 0 1 1.5707963267982696
       children [
         Transform {
           rotation 0.5773502691896258 -0.5773502691896258 -0.5773502691896258 2.0943951023931953
@@ -109,6 +109,10 @@ DEF RobotTemplate Robot {
       lens Lens {
         radialCoefficients -0.5 0
       }
+    }
+    RealsenseD435i {
+      translation 0 0.4953 0.6
+      rotation 0 0 1 1.5707963267982696
     }
     InertialUnit {
       name "IMU1"
