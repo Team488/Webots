@@ -15,7 +15,7 @@ DEF RobotTemplate Robot {
       ]
       steeringDevice [
         PositionSensor {
-          name "CAN11 #"
+          name "CAN21 #"
         }
         RotationalMotor {
           name "Motor11 # front left direction"
@@ -35,7 +35,7 @@ DEF RobotTemplate Robot {
       ]
       steeringDevice [
         PositionSensor {
-          name "CAN12 #"
+          name "CAN22 #"
         }
         RotationalMotor {
           name "Motor12 # front right direction"
@@ -55,7 +55,7 @@ DEF RobotTemplate Robot {
       ]
       steeringDevice [
         PositionSensor {
-          name "CAN13 #"
+          name "CAN23 #"
         }
         RotationalMotor {
           name "Motor13 # back left direction"
@@ -75,7 +75,7 @@ DEF RobotTemplate Robot {
       ]
       steeringDevice [
         PositionSensor {
-          name "CAN14 #"
+          name "CAN24 #"
         }
         RotationalMotor {
           name "Motor14 # back right direction"
