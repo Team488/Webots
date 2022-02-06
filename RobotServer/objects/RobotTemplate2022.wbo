@@ -11,6 +11,7 @@ DEF RobotTemplate Robot {
         }
         RotationalMotor {
           name "Motor1 # front left wheel"
+          maxVelocity 15
         }
       ]
       steeringDevice [
@@ -19,6 +20,7 @@ DEF RobotTemplate Robot {
         }
         RotationalMotor {
           name "Motor11 # front left direction"
+          maxVelocity 15
         }
       ]
     }
@@ -31,6 +33,7 @@ DEF RobotTemplate Robot {
         }
         RotationalMotor {
           name "Motor2 # front right wheel"
+          maxVelocity 15
         }
       ]
       steeringDevice [
@@ -39,6 +42,7 @@ DEF RobotTemplate Robot {
         }
         RotationalMotor {
           name "Motor12 # front right direction"
+          maxVelocity 15
         }
       ]
     }
@@ -51,6 +55,7 @@ DEF RobotTemplate Robot {
         }
         RotationalMotor {
           name "Motor3 # back left wheel"
+          maxVelocity 15
         }
       ]
       steeringDevice [
@@ -59,6 +64,7 @@ DEF RobotTemplate Robot {
         }
         RotationalMotor {
           name "Motor13 # back left direction"
+          maxVelocity 15
         }
       ]
     }
@@ -71,6 +77,7 @@ DEF RobotTemplate Robot {
         }
         RotationalMotor {
           name "Motor4 # back right wheel"
+          maxVelocity 15
         }
       ]
       steeringDevice [
@@ -79,6 +86,7 @@ DEF RobotTemplate Robot {
         }
         RotationalMotor {
           name "Motor14 # back right direction"
+          maxVelocity 15
         }
       ]
     }
@@ -144,13 +152,13 @@ DEF RobotTemplate Robot {
   }
   physics Physics {
     density -1
-    mass 25
+    mass 45
     centerOfMass [
       0 0 0.2
     ]
   }
   supervisor TRUE
-  synchronization FALSE
+  synchronization TRUE
   linearVelocity 4.261458274472847e-11 -5.4236154758573626e-05 -5.074501240022297e-05
   angularVelocity 0.000286195351541186 2.2464770771890838e-10 1.9425695460554475e-12
 }
