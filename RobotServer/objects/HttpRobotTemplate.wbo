@@ -3,6 +3,10 @@ DEF RobotTemplate Robot {
   translation 1.327711271178832 -0.1676452794684375 0.0031176998677572287
   rotation 0.00021013621661028126 -6.617808580745289e-05 -0.9999999757316153 0.9722689103420431
   children [
+    RealsenseD435i {
+      translation 0 0.4953 0.5
+      rotation 0 0 -1 -1.5708
+    }
     Elevator {
       translation 0 -0.47 0.32
     }
