@@ -19,9 +19,14 @@ PROTO RealsenseD435i [
       }
       RangeFinder {
         name "rsD435iDepth"
-        width 848
-        height 480
-        fieldOfView 1.51844
+        #The width/height/fov are commented out. 
+        #Set to match the color camera to simulate robot hardware alignment function
+        #width 848
+        #height 480
+        width 960
+        height 540
+        #fieldOfView 1.51844
+        fieldOfView 1.20428
         minRange 0.29
         maxRange 10.0
       }
