@@ -1,49 +1,21 @@
 from typing import List
-from collections import defaultdict
-from controller import Node, Supervisor, TouchSensor
-from flask import Flask, request
-from itertools import zip_longest
-import enum
-import itertools
-import json
 import logging
-import math
 import socket
 import sys
 import threading
 import time
-import traceback
 
-# TODO: use argparse to clean this up
-robotId = int(sys.argv[1])
-port = int(sys.argv[2])
+from controller import Supervisor
 
-app = Flask(__name__)
+from robot.device_map import build_device_map
+from robot.motor_requests import update_motors
+from camera_stream import start_zmq
+from flask_app import start_flask
 
 # flask log level
-log = logging.getLogger('werkzeug')
+log = logging.getLogger("werkzeug")
 log.setLevel(logging.ERROR)
 
-line_map = {}
-motor_requests = {}
-
-class MotorModes(enum.Enum):
-    POWER = 0
-    VELOCITY = 1
-    POSITION = 2
-
-# See for these values: https://docs.opencv.org/4.5.5/d1/d1b/group__core__hal__interface.html
-class OpenCVDepth(enum.Enum):
-    U8 = 0
-    U16 = 2
-
-# These are simply the number stored as a single bytes.
-class OpenCVChannel(enum.Enum):
-    One = 1
-    Four = 4
-
-def get_device_id(device: str):
-    return device.getName().split("#")[0].strip()
 
 def get_public_ip():
     try:
@@ -55,467 +27,33 @@ def get_public_ip():
         probe_socket.close()
         return ip
     except:
-        return '127.0.0.1'
-
-@app.route("/ping")
-def ping():
-    "Basic Health check"
-    return "pong"
-
-@app.route("/motors", methods=['PUT'])
-def put_motors():
-    global device_map
-    request_data = request.json
-    for request_motor_values in request_data['motors']:
-        request_motor_id = request_motor_values.get("id")
-        motor = device_map["Motors"].get(request_motor_id)
-        if motor:
-            motor_requests[request_motor_id] = request_motor_values
-        else:
-            raise Exception(f"No motor named {request_motor_id} found")
-
-    # return sensor data
-
-    distance_sensor_values = [{
-            "ID": get_device_id(distance_sensor),
-            "Payload": {
-                "Distance": distance_sensor.getValue()
-            }
-        }
-        for distance_sensor in device_map["DistanceSensors"].values()
-    ]
-
-    bumper_touch_sensor_values = [{
-            "ID": get_device_id(bumper_touch_sensor_values),
-            "Payload": {
-                "Triggered": bumper_touch_sensor_values.getValue() == 1
-            }
-        }
-        for bumper_touch_sensor_values in device_map["BumperTouchSensors"].values()
-    ]
-
-    position_sensor_values = [{
-            "ID": get_device_id(position_sensor),
-            "Payload": {
-                "EncoderTicks": position_sensor.getValue()
-            }
-        }
-        for position_sensor in device_map["PositionSensors"].values()
-    ]
-
-    position_sensor_limit_switch_values = []
-    for position_sensor_limit_switch in device_map["PositionSensorLimitSwitch"].values():
-        proto_node = robot.getFromDevice(position_sensor_limit_switch)
-        limits_field = proto_node.getField("limits")
-        position_sensor_name = proto_node.getField("name").getSFString()
-        sensor_names_field = proto_node.getField("sensorNames")
-        limit_width = proto_node.getField("limitWidth").getSFFloat()
-        if (limits_field.getCount() != sensor_names_field.getCount()):
-            print(f"Ignoring misconfigured sensor {position_sensor_name}")
-            continue
-        for limit_switch_index in range(limits_field.getCount()):
-            sensor_name = sensor_names_field.getMFString(limit_switch_index)
-            sensor_limit = limits_field.getMFFloat(limit_switch_index)
-            position_sensor_limit_switch_values.append({
-                "ID": sensor_name.split("#")[0].strip(), # get_device_id only works for real devices
-                "Payload": {
-                    "Triggered": position_sensor_limit_switch.getValue() > sensor_limit - limit_width / 2 and position_sensor_limit_switch.getValue() < sensor_limit + limit_width / 2
-                }
-            })
-
-    imu_sensor_values =  [{
-            "ID": get_device_id(imu),
-            "Payload": {
-                "Roll": imu.getRollPitchYaw()[2],
-                "Pitch": imu.getRollPitchYaw()[1],
-                "Yaw": imu.getRollPitchYaw()[0],
-                "YawVelocity" : gyro.getValues()[2] if gyro else 0
-            }
-        }
-        for imu, gyro in zip_longest(device_map["IMUs"].values(), device_map["Gyros"].values())
-    ]
-
-    # return exact robot world pose for debugging
-    robot_node = robot.getSelf()
-    pose = robot_node.getPose()
-    position = (pose[3], pose[7], pose[11])
-    yaw = math.degrees(math.atan2(pose[0], pose[1])) % 360
-
-    # simulation time is reported in seconds
-    time = robot.getTime()
-    return json.dumps({
-        "Sensors": list(itertools.chain(
-            distance_sensor_values,
-            bumper_touch_sensor_values,
-            position_sensor_values,
-            position_sensor_limit_switch_values,
-            imu_sensor_values
-        )),
-        "WorldPose": {
-            "Position": position,
-            "Yaw": yaw,
-            "Time": time
-        }
-    })
-
-@app.route("/position", methods=['PUT'])
-def reset_position():
-    request_data = request.json or {}
-    target_position = request_data.get("position", [0,0,0.1])
-    # defaults to straight up
-    target_rotation = request_data.get("rotation", [1, 0, 0, 0]) 
-    print(f"Resetting position to {target_position} @ {target_rotation}")
-
-    robot_node = robot.getSelf()
-    translation_field = robot_node.getField("translation")
-    rotation_field = robot_node.getField("rotation")
-
-    translation_field.setSFVec3f(target_position)
-    rotation_field.setSFRotation(target_rotation)
-    robot_node.resetPhysics()
-
-    return 'OK'
-    
-
-@app.route("/overlay/line", methods=['PUT'])
-def put_line():
-    request_data = request.json or {}
-    
-    name = request_data['name']
-    point_1 = request_data['point_1']
-    point_2 = request_data['point_2']
-    color_rgb = request_data.get('color', [0, 1, 1])
-
-    draw_line(name, point_1, point_2, color_rgb=color_rgb)
-    
-    return 'OK'
-
-@app.route("/overlay/arrow", methods=['PUT'])
-def put_arrow():
-    request_data = request.json or {}
-    
-    name = request_data['name']
-    point_1 = request_data['point_1']
-    point_2 = request_data['point_2']
-    color_rgb = request_data.get('color', [0, 1, 1])
-
-    draw_arrow(name, point_1, point_2, color_rgb=color_rgb)
-    
-    return 'OK'
-
-
-@app.route("/overlay/circle", methods=['PUT'])
-def put_circle():
-    request_data = request.json or {}
-    
-    name = request_data['name']
-    center = request_data['center']
-    radius = request_data['radius']
-    color_rgb = request_data.get('color', [0, 1, 1])
-
-    draw_circle(name=name, center=center, color_rgb=color_rgb, radius=radius)
-    
-    return 'OK'
-
-def build_device_map(robot):
-    device_map = defaultdict(dict)
-
-    device_count = robot.getNumberOfDevices()
-    for i in range(device_count):
-        device = robot.getDeviceByIndex(i)
-        device_type = device.getNodeType()
-        device_id = get_device_id(device)
-
-        if device_type == Node.ROTATIONAL_MOTOR or device_type == Node.LINEAR_MOTOR:
-            # Initialize the motor with an infinite target position so that we can directly control velocity
-            device.setPosition(float("inf"))
-            device.setVelocity(0)
-            device_map["Motors"][device_id] = device
-        elif device_type == Node.DISTANCE_SENSOR:
-            # Initialize the distance sensor with an update frequency
-            device.enable(timestep)
-            device_map["DistanceSensors"][device_id] = device
-        elif device_type == Node.TOUCH_SENSOR and device.getType() == TouchSensor.BUMPER:
-            device.enable(timestep)
-            device_map["BumperTouchSensor"][device_id] = device
-        elif device_type == Node.POSITION_SENSOR:
-            device.enable(timestep)
-            device_map["PositionSensors"][device_id] = device
-            # Handle PositionSensorLimitSwitch
-            device_node = robot.getFromDevice(device)
-            if (device_node and device_node.isProto() and device_node.getTypeName() == "PositionSensorLimitSwitch"):
-                device_map["PositionSensorLimitSwitch"][device_id] = device
-        elif device_type == Node.INERTIAL_UNIT:
-            device.enable(timestep)
-            device_map["IMUs"][device_id] = device
-        elif device_type == Node.CAMERA:
-            device.enable(timestep)
-            device_map["Cameras"][device_id] = device
-        elif device_type == Node.RANGE_FINDER:
-            device.enable(timestep)
-            device_map["RangeFinders"][device_id] = device
-        elif device_type == Node.GYRO:
-            device.enable(timestep)
-            device_map["Gyros"][device_id] = device
-
-    return device_map
-
-
-# Draws a line between point_1 and point_2
-# name creates the node in the tree so we just update the same node each time
-def draw_line(name: str, point_1: List[float], point_2: List[float], color_rgb: List[float]):
-    # Create node with name if it doesn't exist yet
-    node_name = f'LINE_{name}'
-
-    if node_name not in line_map:
-        root_node = robot.getRoot()
-        root_children_field = root_node.getField("children")
-
-        template = f"DEF {node_name} " + """Shape {
-            appearance Appearance {
-                material Material {
-                    emissiveColor """ + " ".join(map(str, color_rgb)) + """
-                }
-            }
-            geometry DEF TRAIL_LINE_SET IndexedLineSet {
-                coord Coordinate {
-                    point [
-                        0 0 0
-                        0 0 0
-                    ]
-                }
-                coordIndex [
-                    0 1 -1
-                ]
-            }
-        }"""
-        root_children_field.importMFNodeFromString(-1, template)
-
-        # Update the coords based on points
-        trail_set_node = robot.getFromDef(f"{node_name}.TRAIL_LINE_SET")
-        coordinates_node = trail_set_node.getField("coord").getSFNode()
-        point_field = coordinates_node.getField("point")
-        line_map[node_name] = point_field
-    else:
-        point_field = line_map[node_name]
-
-    point_field.setMFVec3f(0, point_1)
-    point_field.setMFVec3f(1, point_2)
-
-
-# Draws a line between point_1 and point_2
-# name creates the node in the tree so we just update the same node each time
-def draw_arrow(name: str, point_1: List[float], point_2: List[float], color_rgb: List[float], arrow_angle_deg=35, arrow_len_ratio=0.25):
-    # Create node with name if it doesn't exist yet
-    node_name = f'ARROW_{name}'
-
-    if node_name not in line_map:
-        root_node = robot.getRoot();
-        root_children_field = root_node.getField("children");
-
-        template = f"DEF {node_name} " + """Shape {
-            appearance Appearance {
-                material Material {
-                    emissiveColor """ + " ".join(map(str, color_rgb)) + """
-                }
-            }
-            geometry DEF TRAIL_LINE_SET IndexedLineSet {
-                coord Coordinate {
-                    point [
-                        0 0 0
-                        0 0 0
-                        0 0 0
-                        0 0 0
-                    ]
-                }
-                coordIndex [
-                    0 1 -1
-                    1 2 -1
-                    1 3 -1
-                ]
-            }
-        }"""
-        root_children_field.importMFNodeFromString(-1, template)
-
-        # Update the coords based on points
-        trail_set_node = robot.getFromDef(f"{node_name}.TRAIL_LINE_SET")
-        coordinates_node = trail_set_node.getField("coord").getSFNode()
-        point_field = coordinates_node.getField("point")
-        line_map[node_name] = point_field
-    else:
-        point_field = line_map[node_name]
-
-    # calculate arrow points based on start/end
-    # convert to polar
-    delta = [point_1[0] - point_2[0], point_1[1] - point_2[1]]
-    length = math.sqrt(delta[0] ** 2 + delta[1] ** 2)
-    angle = math.atan2(delta[0], delta[1])
-
-    left_angle = angle + math.radians(arrow_angle_deg)
-    right_angle = angle - math.radians(arrow_angle_deg)
-
-    arrow_length = length * arrow_len_ratio
-    arrow_left = [arrow_length * math.sin(left_angle) + point_2[0], arrow_length * math.cos(left_angle) + point_2[1], point_2[2]]
-    arrow_right = [arrow_length * math.sin(right_angle) + point_2[0], arrow_length * math.cos(right_angle) + point_2[1], point_2[2]]
-
-
-    point_field.setMFVec3f(0, point_1)
-    point_field.setMFVec3f(1, point_2)
-    point_field.setMFVec3f(2, arrow_left)
-    point_field.setMFVec3f(3, arrow_right)
-
-
-def draw_circle(name: str, center: List[float], color_rgb: List[float], radius: float, num_segments=20):
-    # Create node with name if it doesn't exist yet
-    node_name = f'CIRCLE_{name}'
-
-    if node_name not in line_map:
-        node = robot.getFromDef(node_name)
-        root_node = robot.getRoot();
-        root_children_field = root_node.getField("children");
-
-        template = f"DEF {node_name} " + """Shape {
-            appearance Appearance {
-                material Material {
-                    emissiveColor """ + " ".join(map(str, color_rgb)) + """
-                }
-            }
-            geometry DEF TRAIL_LINE_SET IndexedLineSet {
-                coord Coordinate {
-                    point [
-                        """ + ("0 0 0\n" * num_segments) + """
-                    ]
-                }
-                coordIndex [
-                    """ + " ".join(map(str, range(num_segments))) + """ 0 -1
-                ]
-            }
-        }"""
-        root_children_field.importMFNodeFromString(-1, template)
-        node = robot.getFromDef(node_name)
-
-        # Update the coords based on points
-        trail_set_node = robot.getFromDef(f"{node_name}.TRAIL_LINE_SET")
-        coordinates_node = trail_set_node.getField("coord").getSFNode()
-        point_field = coordinates_node.getField("point")
-        line_map[node_name] = point_field
-    else:
-        point_field = line_map[node_name]
-
-    # Use polar coordinates to find points on the circle
-    for i in range(num_segments):
-        theta = math.pi * 2 / num_segments * i
-        point = [
-            center[0] + radius * math.cos(theta),
-            center[1] + radius * math.sin(theta),
-            center[2],
-        ]
-        point_field.setMFVec3f(i, point)
-    
-
-def update_motors():
-    for motor_id, request_motor_values in motor_requests.items():
-            motor = device_map["Motors"][motor_id]
-            value = request_motor_values.get("val")
-            mode = MotorModes[request_motor_values.get("mode", "velocity").upper()]
-            if mode == MotorModes.VELOCITY:
-                # this is required to renable velocity PID in case we were last on a different mode. A fancier version would latch 
-                # on changes to the mode and only set it then.
-                motor.setPosition(float("inf"))
-                motor.setVelocity(float(value * motor.getMaxVelocity()))
-            elif mode == MotorModes.POSITION:
-                motor.setPosition(float(value))
-            elif mode == MotorModes.POWER:
-                motor.setForce(float(value * motor.getMaxTorque()))
-            else:
-                raise Exception(f"Unhandled motor mode {mode}")
-
-
-def start_flask():
-    global app, port
-
-    print(f"[HttpRobot{robotId}] Starting flask server on http://{get_public_ip()}:{port}", flush=True)
-
-    # Set the host to allow remote connections
-    app.run(host='0.0.0.0', port=port)
-
-
-def start_zmq():
-    global device_map, port
-
-    zmq_video_sleep_seconds = 1 / 60
-    zmq_port_offset = 10
-    zmq_port = port + zmq_port_offset
-
-    try:
-        import numpy as np
-        import zmq
-
-        # Start a ZeroMQ server.
-        zmq_context = zmq.Context()
-        zmq_socket = zmq_context.socket(zmq.PUB)
-        zmq_socket.bind(f"tcp://0.0.0.0:{zmq_port}")
-
-        # Create an message template for each device of the format:
-        # [ topic, height, width, bit_depth, channel_count, image_data ]
-        camera_devices = list(device_map["Cameras"].values())
-        camera_devices.extend(device_map["RangeFinders"].values())
-        messages = {
-            get_device_id(device): [
-                get_device_id(device).encode('ascii'),  # The first element of a multipart message is also considered the "topic" name.
-                device.getHeight().to_bytes(4, byteorder='little'),
-                device.getWidth().to_bytes(4, byteorder='little'),
-                (OpenCVDepth.U16 if device.getNodeType() == Node.RANGE_FINDER else OpenCVDepth.U8).value.to_bytes(1, byteorder='little'),
-                (OpenCVChannel.One if device.getNodeType() == Node.RANGE_FINDER else OpenCVChannel.Four).value.to_bytes(1, byteorder='little'),
-                None  # Reserve a placeholder for the image buffer.
-            ] for device in camera_devices
-        }
-
-        # Print the ZMQ URLs with topics as paths. Note that this is a custom format. In practice, the URLs and topics are used independently.
-        for message in messages.values():
-            print(f"[HttpRobot{robotId}] Starting zmq server on tcp://{get_public_ip()}:{zmq_port}/{message[0].decode()}", flush=True)
-
-        while True:
-            for device in camera_devices:
-
-                # Start with the message template.
-                message = messages[get_device_id(device)]
-
-                # Set the image in the message depending on the type of device.
-                device_type = device.getNodeType()
-                if device_type == Node.CAMERA:
-                    message[-1] = bytes(device.getImage())
-                elif device_type == Node.RANGE_FINDER:
-                    # RangeFinder images are received from Webots as single-channel float32 images at meter-scale.
-                    # We stream them as single-channel uint16 images at millimeter-scale, to match the more common Realsense format.
-                    float_buffer = np.frombuffer(device.getRangeImage(data_type = 'buffer'), dtype=np.float32)
-                    message[-1] = (float_buffer * 1000).astype('uint16').tobytes()
-
-                # Send the full message.
-                zmq_socket.send_multipart(message)
-
-            # Sleep so we don't overload the ZMQ socket.
-            # The sleep time is correlated with framerate, but doesn't seem to match it exactly.
-            time.sleep(zmq_video_sleep_seconds)
-
-    except:
-        print("Could not start zmq!", file=sys.stderr)
-        print(traceback.format_exc(), file=sys.stderr)
+        return "127.0.0.1"
 
 
 if __name__ == "__main__":
+    # TODO: use argparse to clean this up
+    robotId = int(sys.argv[1])
+    port = int(sys.argv[2])
     # Create the robot
     robot = Supervisor()
     timestep = int(robot.getBasicTimeStep())
-    device_map = build_device_map(robot)
-    threading.Thread(target=start_flask).start()
-    threading.Thread(target=start_zmq).start()
+    device_map = build_device_map(robot, timestep)
+    motor_requests = {}
+    line_map = {}
+    threading.Thread(
+        target=lambda: start_flask(
+            device_map, motor_requests, robot, robotId, get_public_ip(), port
+        )
+    ).start()
+    threading.Thread(
+        target=lambda: start_zmq(port, robotId, get_public_ip(), device_map)
+    ).start()
 
     # Run the simulation loop
     print("Starting null op simulation loop")
     while robot.step(timestep) != -1:
         # motor updates need to happen every tick so things like raw torques are constantly applied
-        update_motors()
+        update_motors(device_map, motor_requests)
         # the sleep creates space for the webserver to run more responsively
         time.sleep(timestep / 1000)
     print("Finished")
