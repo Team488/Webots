@@ -51,6 +51,9 @@ def build_device_map(robot, timestep) -> dict:
         elif device_type == Node.GYRO:
             device.enable(timestep)
             device_map["Gyros"][device_id] = device
+        elif device_type == Node.RANGE_FINDER:
+            device.enable(timestep)
+            device_map["RangeFinders"][device_id] = device
         else:
             print(
                 f"Found unknown device of type {device_type} with ID {device_id} not mapped"

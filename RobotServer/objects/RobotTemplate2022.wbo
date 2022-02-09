@@ -11,14 +11,16 @@ DEF RobotTemplate Robot {
         }
         RotationalMotor {
           name "Motor1 # front left wheel"
+          maxVelocity 15
         }
       ]
       steeringDevice [
         PositionSensor {
-          name "CAN11 #"
+          name "CAN21 #"
         }
         RotationalMotor {
           name "Motor11 # front left direction"
+          maxVelocity 15
         }
       ]
     }
@@ -31,14 +33,16 @@ DEF RobotTemplate Robot {
         }
         RotationalMotor {
           name "Motor2 # front right wheel"
+          maxVelocity 15
         }
       ]
       steeringDevice [
         PositionSensor {
-          name "CAN12 #"
+          name "CAN22 #"
         }
         RotationalMotor {
           name "Motor12 # front right direction"
+          maxVelocity 15
         }
       ]
     }
@@ -51,14 +55,16 @@ DEF RobotTemplate Robot {
         }
         RotationalMotor {
           name "Motor3 # back left wheel"
+          maxVelocity 15
         }
       ]
       steeringDevice [
         PositionSensor {
-          name "CAN13 #"
+          name "CAN23 #"
         }
         RotationalMotor {
           name "Motor13 # back left direction"
+          maxVelocity 15
         }
       ]
     }
@@ -71,14 +77,16 @@ DEF RobotTemplate Robot {
         }
         RotationalMotor {
           name "Motor4 # back right wheel"
+          maxVelocity 15
         }
       ]
       steeringDevice [
         PositionSensor {
-          name "CAN14 #"
+          name "CAN24 #"
         }
         RotationalMotor {
           name "Motor14 # back right direction"
+          maxVelocity 15
         }
       ]
     }
@@ -88,7 +96,7 @@ DEF RobotTemplate Robot {
     }
     Camera {
       translation 0 0.4953 0.5
-      rotation 1.8366025517039032e-06 -1.836602551703903e-06 0.9999999999966269 1.5707963267982696
+      rotation 0 0 1 1.5707963267982696
       children [
         Transform {
           rotation 0.5773502691896258 -0.5773502691896258 -0.5773502691896258 2.0943951023931953
@@ -109,6 +117,10 @@ DEF RobotTemplate Robot {
       lens Lens {
         radialCoefficients -0.5 0
       }
+    }
+    RealsenseD435i {
+      translation 0 0.4953 0.6
+      rotation 0 0 1 1.5707963267982696
     }
     InertialUnit {
       name "IMU1"
@@ -144,13 +156,13 @@ DEF RobotTemplate Robot {
   }
   physics Physics {
     density -1
-    mass 25
+    mass 45
     centerOfMass [
       0 0 0.2
     ]
   }
   supervisor TRUE
-  synchronization FALSE
+  synchronization TRUE
   linearVelocity 4.261458274472847e-11 -5.4236154758573626e-05 -5.074501240022297e-05
   angularVelocity 0.000286195351541186 2.2464770771890838e-10 1.9425695460554475e-12
 }
