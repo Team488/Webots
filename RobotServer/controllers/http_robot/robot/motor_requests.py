@@ -5,6 +5,11 @@ class MotorModes(enum.Enum):
     POWER = 0
     VELOCITY = 1
     POSITION = 2
+    VIRTUAL_SOLENOID = 3
+
+class SolenoidPositions(enum.Enum):
+    ON = 'on'
+    OFF = 'off'
 
 
 def apply_motor_requests(
@@ -31,6 +36,11 @@ def update_motors(device_map: dict, motor_requests: dict) -> None:
             motor.setVelocity(float(value * motor.getMaxVelocity()))
         elif mode == MotorModes.POSITION:
             motor.setPosition(float(value))
+        elif mode == MotorModes.VIRTUAL_SOLENOID:
+            if value == SolenoidPositions.ON:
+                motor.setPosition(motor.getMaxPosition())
+            else:
+                motor.setPosition(motor.getMinPosition())
         elif mode == MotorModes.POWER:
             motor.setForce(float(value * motor.getMaxTorque()))
         else:
