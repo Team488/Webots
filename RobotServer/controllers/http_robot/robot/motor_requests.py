@@ -37,10 +37,15 @@ def update_motors(device_map: dict, motor_requests: dict) -> None:
         elif mode == MotorModes.POSITION:
             motor.setPosition(float(value))
         elif mode == MotorModes.VIRTUAL_SOLENOID:
-            if value == SolenoidPositions.ON:
+            target_position = SolenoidPositions[value.upper()]
+            # Set the max velocity that the positional pid can use
+            motor.setVelocity(motor.getMaxVelocity())
+            if target_position == SolenoidPositions.ON:
                 motor.setPosition(motor.getMaxPosition())
-            else:
+            elif target_position == SolenoidPositions.OFF:
                 motor.setPosition(motor.getMinPosition())
+            else:
+                raise ValueError("Unknown solenoid position: " + target_position)
         elif mode == MotorModes.POWER:
             motor.setForce(float(value * motor.getMaxTorque()))
         else:
