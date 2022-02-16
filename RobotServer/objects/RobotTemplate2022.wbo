@@ -1,31 +1,74 @@
 #VRML_OBJ R2022a utf8
 DEF RobotTemplate Robot {
-  translation 1.8087759141732468e-10 1.0986102185610335e-07 -0.001363378486078759
-  rotation 0.9999996046133542 -1.0545962728517921e-05 0.0008891917215829847 0.0003998599798733738
+  translation 2.549635463850731e-10 2.2820234275621142e-06 0.0005330903014333366
+  rotation 0.0072036788037401975 0.020389628546036508 0.9997661576886104 3.5563590056078317e-07
   children [
+    Transform {
+      translation 0 0 0.29
+      children [
+        HingeJoint {
+          jointParameters HingeJointParameters {
+            position 3.058602645098061e-11
+            maxStop 0.5
+          }
+          device [
+            RotationalMotor {
+              name "Solenoid1"
+              maxPosition 0.5
+            }
+          ]
+          endPoint Solid {
+            translation 4.404120400856828e-11 -1.0373902347106854e-06 -0.0035278758335878157
+            rotation 1 0 0 0
+            children [
+              DEF climber_base Transform {
+                translation 0 0 0.76
+                children [
+                  Shape {
+                    appearance Appearance {
+                      material Material {
+                      }
+                    }
+                    geometry Box {
+                      size 0.1 0.1 1.5
+                    }
+                  }
+                ]
+              }
+            ]
+            boundingObject USE climber_base
+            physics Physics {
+              density 100
+            }
+            linearVelocity 1.926618350905982e-14 3.7091179027414556e-14 -1.4532025784319556e-07
+            angularVelocity -3.4479484703994006e-14 9.887375369483497e-15 -2.9766092928984884e-16
+          }
+        }
+      ]
+    }
     DEF s_front_left SwerveWheel {
       translation 0.37 -0.35 0.07
+      rotation 3.8853327326503343e-11 1 3.8853169251465796e-11 1.5708000000386484
       wheelDevice [
         PositionSensor {
           name "CAN1 #"
         }
         RotationalMotor {
           name "Motor1 # front left wheel"
-          maxVelocity 15
         }
       ]
       steeringDevice [
         PositionSensor {
-          name "CAN21 #"
+          name "CAN11 #"
         }
         RotationalMotor {
           name "Motor11 # front left direction"
-          maxVelocity 15
         }
       ]
     }
     DEF s_front_right SwerveWheel {
       translation -0.37 -0.35 0.07
+      rotation 3.8853733528462115e-11 1 3.8853632146995e-11 1.5708000000386497
       name "wheel(1)"
       wheelDevice [
         PositionSensor {
@@ -33,21 +76,20 @@ DEF RobotTemplate Robot {
         }
         RotationalMotor {
           name "Motor2 # front right wheel"
-          maxVelocity 15
         }
       ]
       steeringDevice [
         PositionSensor {
-          name "CAN22 #"
+          name "CAN12 #"
         }
         RotationalMotor {
           name "Motor12 # front right direction"
-          maxVelocity 15
         }
       ]
     }
     DEF s_back_left SwerveWheel {
       translation 0.37 0.35 0.07
+      rotation -3.95739814244599e-11 1 -3.9573401675907364e-11 1.5708000000386493
       name "wheel(2)"
       wheelDevice [
         PositionSensor {
@@ -55,21 +97,20 @@ DEF RobotTemplate Robot {
         }
         RotationalMotor {
           name "Motor3 # back left wheel"
-          maxVelocity 15
         }
       ]
       steeringDevice [
         PositionSensor {
-          name "CAN23 #"
+          name "CAN13 #"
         }
         RotationalMotor {
           name "Motor13 # back left direction"
-          maxVelocity 15
         }
       ]
     }
     DEF s_back_right SwerveWheel {
       translation -0.37 0.35 0.07
+      rotation -3.957352997163659e-11 1 -3.9572923209354495e-11 1.5708000000386493
       name "wheel(3)"
       wheelDevice [
         PositionSensor {
@@ -77,16 +118,14 @@ DEF RobotTemplate Robot {
         }
         RotationalMotor {
           name "Motor4 # back right wheel"
-          maxVelocity 15
         }
       ]
       steeringDevice [
         PositionSensor {
-          name "CAN24 #"
+          name "CAN14 #"
         }
         RotationalMotor {
           name "Motor14 # back right direction"
-          maxVelocity 15
         }
       ]
     }
@@ -96,7 +135,7 @@ DEF RobotTemplate Robot {
     }
     Camera {
       translation 0 0.4953 0.5
-      rotation 0 0 1 1.5707963267982696
+      rotation 1.8366025517039032e-06 -1.836602551703903e-06 0.9999999999966269 1.5707963267982696
       children [
         Transform {
           rotation 0.5773502691896258 -0.5773502691896258 -0.5773502691896258 2.0943951023931953
@@ -118,22 +157,18 @@ DEF RobotTemplate Robot {
         radialCoefficients -0.5 0
       }
     }
-    RealsenseD435i {
-      translation 0 0.4953 0.6
-      rotation 0 0 1 1.5707963267982696
-    }
     InertialUnit {
       name "IMU1"
     }
     Transform {
-      translation 0 0 0.5
+      translation 0 0 0.2
       children [
         Shape {
           appearance PBRAppearance {
             metalness 0
           }
           geometry Box {
-            size 0.7112 0.9652 0.7
+            size 0.9 1.1 0.1
           }
         }
       ]
@@ -156,13 +191,13 @@ DEF RobotTemplate Robot {
   }
   physics Physics {
     density -1
-    mass 45
+    mass 25
     centerOfMass [
       0 0 0.2
     ]
   }
   supervisor TRUE
-  synchronization TRUE
-  linearVelocity 4.261458274472847e-11 -5.4236154758573626e-05 -5.074501240022297e-05
-  angularVelocity 0.000286195351541186 2.2464770771890838e-10 1.9425695460554475e-12
+  synchronization FALSE
+  linearVelocity 1.12129213031647e-14 7.510764676570739e-15 2.33980936172884e-10
+  angularVelocity -3.5839906628658774e-14 9.334195103997722e-15 -2.96731874417745e-16
 }

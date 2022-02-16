@@ -3,8 +3,8 @@ WorldInfo {
 }
 Viewpoint {
   fieldOfView 1.0472
-  orientation 0.31767916773800514 -0.01948594669737194 -0.9479980191258818 3.189864394851111
-  position 3.7693354325832527 0.7609164910828017 3.0591983211142053
+  orientation -0.026212303642680884 0.005193860090825321 0.9996429057193877 3.6069652784601334
+  position 2.006196761614901 1.3211548989940178 0.8046921666564748
 }
 Solid {
   rotation 1 0 0 0
@@ -40,6 +40,49 @@ DEF RobotTemplate Robot {
   translation 1.8087759141732468e-10 1.0986102185610335e-07 -0.001363378486078759
   rotation 0.9999996046133542 -1.0545962728517921e-05 0.0008891917215829847 0.0003998599798733738
   children [
+    Transform {
+      translation 0 0 0.29
+      children [
+        HingeJoint {
+          jointParameters HingeJointParameters {
+            position 1.5292208914405013e-11
+            maxStop 0.5
+          }
+          device [
+            RotationalMotor {
+              name "Solenoid1"
+              maxPosition 0.5
+            }
+          ]
+          endPoint Solid {
+            translation 4.404120400856828e-11 -1.037390342614389e-06 -0.003527875833587784
+            rotation 1 0 0 0
+            children [
+              DEF climber_base Transform {
+                translation 0 0 0.76
+                children [
+                  Shape {
+                    appearance Appearance {
+                      material Material {
+                      }
+                    }
+                    geometry Box {
+                      size 0.1 0.1 1.5
+                    }
+                  }
+                ]
+              }
+            ]
+            boundingObject USE climber_base
+            physics Physics {
+              density 100
+            }
+            linearVelocity -1.2247745663903742e-11 5.440201294644955e-11 6.85268844942472e-06
+            angularVelocity -5.178027716552098e-11 -1.1655482038430226e-11 -1.3932232603456252e-17
+          }
+        }
+      ]
+    }
     DEF s_front_left SwerveWheel {
       translation 0.37 -0.35 0.07
       wheelDevice [
@@ -48,6 +91,7 @@ DEF RobotTemplate Robot {
         }
         RotationalMotor {
           name "Motor1 # front left wheel"
+          maxVelocity 15
         }
       ]
       steeringDevice [
@@ -56,6 +100,7 @@ DEF RobotTemplate Robot {
         }
         RotationalMotor {
           name "Motor11 # front left direction"
+          maxVelocity 15
         }
       ]
     }
@@ -68,6 +113,7 @@ DEF RobotTemplate Robot {
         }
         RotationalMotor {
           name "Motor2 # front right wheel"
+          maxVelocity 15
         }
       ]
       steeringDevice [
@@ -76,6 +122,7 @@ DEF RobotTemplate Robot {
         }
         RotationalMotor {
           name "Motor12 # front right direction"
+          maxVelocity 15
         }
       ]
     }
@@ -88,6 +135,7 @@ DEF RobotTemplate Robot {
         }
         RotationalMotor {
           name "Motor3 # back left wheel"
+          maxVelocity 15
         }
       ]
       steeringDevice [
@@ -96,6 +144,7 @@ DEF RobotTemplate Robot {
         }
         RotationalMotor {
           name "Motor13 # back left direction"
+          maxVelocity 15
         }
       ]
     }
@@ -108,6 +157,7 @@ DEF RobotTemplate Robot {
         }
         RotationalMotor {
           name "Motor4 # back right wheel"
+          maxVelocity 15
         }
       ]
       steeringDevice [
@@ -116,6 +166,7 @@ DEF RobotTemplate Robot {
         }
         RotationalMotor {
           name "Motor14 # back right direction"
+          maxVelocity 15
         }
       ]
     }
@@ -125,7 +176,7 @@ DEF RobotTemplate Robot {
     }
     Camera {
       translation 0 0.4953 0.5
-      rotation 1.8366025517039032e-06 -1.836602551703903e-06 0.9999999999966269 1.5707963267982696
+      rotation 0 0 1 1.5707963267982696
       children [
         Transform {
           rotation 0.5773502691896258 -0.5773502691896258 -0.5773502691896258 2.0943951023931953
@@ -146,6 +197,10 @@ DEF RobotTemplate Robot {
       lens Lens {
         radialCoefficients -0.5 0
       }
+    }
+    RealsenseD435i {
+      translation 0 0.4953 0.6
+      rotation 0 0 1 1.5707963267982696
     }
     InertialUnit {
       name "IMU1"
