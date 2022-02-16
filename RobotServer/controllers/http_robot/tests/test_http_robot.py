@@ -46,6 +46,21 @@ def test_put_motors__default_set(test_app):
     assert test_app.motor_requests[motor_id] == {"id": motor_id, "value": 1.0}
 
 
+def test_put_motors__set_position(test_app):
+    motor_id = "Motor1"
+
+    test_app.device_map["Motors"][motor_id] = Mock()
+
+    response = test_app.test_client.put(
+        "/motors",
+        data=json.dumps({"motors": [{"id": motor_id, "value": 1.0, "mode": "position"}]}),
+        content_type="application/json",
+    )
+
+    assert response.status_code == 200
+    assert test_app.motor_requests[motor_id] == {"id": motor_id, "value": 1.0, "mode": "position"}
+
+
 @mark.parametrize(
     "sensor_type, payload_name, payload_value",
     [
