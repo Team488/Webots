@@ -43,6 +43,15 @@ def get_sensors_data(device_map, robot) -> list:
         for position_sensor in device_map["PositionSensors"].values()
     ]
 
+    motor_encoder_values = [
+        {
+            # report motor encoder position with CAN prefix
+            "ID": get_device_id(motor).replace("Motor", "CAN"),
+            "Payload": {"EncoderTicks": motor.getPositionSensor().getValue()},
+        }
+        for motor in device_map["Motors"].values() if motor.getPositionSensor() is not None
+    ]
+
     position_sensor_limit_switch_values = []
     for position_sensor_limit_switch in device_map[
         "PositionSensorLimitSwitch"
@@ -79,7 +88,7 @@ def get_sensors_data(device_map, robot) -> list:
                 "Roll": imu.getRollPitchYaw()[2],
                 "Pitch": imu.getRollPitchYaw()[1],
                 "Yaw": imu.getRollPitchYaw()[0],
-                "YawVelocity": gyro.getValues()[2],
+                "YawVelocity": gyro.getValues()[2] if gyro is not None else 0.0,
             },
         }
         for imu, gyro in zip_longest(
@@ -92,6 +101,7 @@ def get_sensors_data(device_map, robot) -> list:
             distance_sensor_values,
             bumper_touch_sensor_values,
             position_sensor_values,
+            motor_encoder_values,
             position_sensor_limit_switch_values,
             imu_sensor_values,
         )
