@@ -35,6 +35,7 @@ def update_motors(device_map: dict, motor_requests: dict) -> None:
             motor.setPosition(float("inf"))
             motor.setVelocity(float(value * motor.getMaxVelocity()))
         elif mode == MotorModes.POSITION:
+            motor.setVelocity(motor.getMaxVelocity())
             motor.setPosition(float(value))
         elif mode == MotorModes.VIRTUAL_SOLENOID:
             target_position = SolenoidPositions[value.upper()]

@@ -1,5 +1,5 @@
 import json
-from unittest.mock import Mock
+from unittest.mock import MagicMock, Mock
 
 from pytest import mark
 
@@ -34,7 +34,9 @@ def test_put_motors__invalid_motor(test_app):
 def test_put_motors__default_set(test_app):
     motor_id = "Motor1"
 
-    test_app.device_map["Motors"][motor_id] = Mock()
+    motor_mock = MagicMock()
+    motor_mock.getPositionSensor.return_value = None
+    test_app.device_map["Motors"][motor_id] = motor_mock
 
     response = test_app.test_client.put(
         "/motors",
@@ -49,7 +51,9 @@ def test_put_motors__default_set(test_app):
 def test_put_motors__set_position(test_app):
     motor_id = "Motor1"
 
-    test_app.device_map["Motors"][motor_id] = Mock()
+    motor_mock = MagicMock()
+    motor_mock.getPositionSensor.return_value = None
+    test_app.device_map["Motors"][motor_id] = motor_mock
 
     response = test_app.test_client.put(
         "/motors",
