@@ -8,8 +8,9 @@ Visit https://cyberbotics.com/ and hit the big download button and install from 
 
 ### Install Python and requirements
 
-1. The easiest way to install python and windows and get nice contained virtual environments is to use anaconda. You can install it here: https://docs.anaconda.com/anaconda/install/windows/
-2. Start an anaconda powershell prompt (hit your windows key and type "anaconda" and it should come up as an option)
+1. The easiest way to install python and windows and get nice contained virtual environments is to use anaconda. Follow the installation instructions on this page: https://docs.anaconda.com/anaconda/install/windows/
+
+2. Once installation is complete, start an anaconda powershell prompt (hit your windows key and type "anaconda powershell" and it should come up as an option).
 3. Create a new environment for webots by running these commands (say yes when prompted):
 
 ```bash
@@ -27,10 +28,10 @@ pip install -r requirements.txt
 6. Now we just need the path to this python environment so we can give it to the Webots program, to find that out, run:
 
 ```powershell
-get-command python
+Get-Command python | %{$_.Source}
 ```
 
-7. Copy what the above command spit out under "Source", for me it was `C:\Users\Alex\miniconda3\envs\webots\python.exe`
+7. Copy what the above command returns; for me it was `C:\Users\Alex\miniconda3\envs\webots\python.exe`
 8. Open the Webots program and in the top menu go Tools -> Preferences and paste the above path into the "Python command" box in the middle
 
 ## How to use
