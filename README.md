@@ -4,7 +4,8 @@
 
 ### Install Webots
 
-Visit https://cyberbotics.com/ and hit the big download button and install from there.
+This repo currently works with the 2022a version of webots (even though the latest is newer than that). You can install that version of Webots from:
+https://github.com/cyberbotics/webots/releases/tag/R2022a
 
 ### Install Python and requirements
 
