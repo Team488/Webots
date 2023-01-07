@@ -1,0 +1,101 @@
+#VRML_OBJ R2022a utf8
+
+PROTO AprilTag16h5Panel [
+  field SFString   name        "april-tag-panel"
+  field SFVec3f    translation 0 0 0
+  field SFRotation rotation    0 0.707107 0.707107 3.14159
+  field SFInt32    aprilTagId  0
+]
+{
+  %{
+    -- construct the dynamic ID label
+    text = "ID " .. fields.aprilTagId.value
+
+    -- build the texture
+    local gd = require("gd")
+    local debug = require("debug")
+    local os = require('os')
+    local wbrandom = require('wbrandom')
+    wbrandom.seed(os.clock() + os.time())
+    imageWidth = 256
+    imageHeight = 128
+    local im = gd.createTrueColor(imageWidth, imageHeight)
+    bgColor = im:colorAllocate(255, 255, 255)
+    im:filledRectangle(0, 0, imageWidth - 1, imageHeight - 1, bgColor)
+    -- calculate dpi so decal size is static
+    inchesPerMeter = 39.3701
+    labelWidthInches = 2
+    labelHeightInches = 0.75
+    labelWidthMeters = 0.0254 * labelWidthInches
+    labelHeightMeters = 0.0254 * labelHeightInches
+    hdpi = imageWidth / labelWidthInches
+    vdpi = imageHeight / labelHeightInches
+    -- draw text once to get dimensions
+    gd.fontCacheSetup()
+    font = "Arial"
+    fontSize = 60
+    llx, lly, lrx, lry, urx, ury, ulx, uly = im:stringFTEx(bgColor, font, fontSize, 0, 0, 0, text, { hdpi=hdpi, vdpi=vdpi })
+    -- draw text for real, centered
+    textX = (imageWidth - lrx) / 2
+    textY = (imageHeight - ury) / 2
+    textColor = im:colorAllocate(0, 0, 0)
+    im:stringFTEx(textColor, font, fontSize, 0, textX, textY, text, { hdpi=hdpi, vdpi=vdpi })
+
+    -- save the image in a png file
+    local name = debug.getinfo(1,'S').source  -- get the name of the current file
+    name = name .. wbrandom.integer(0, 100000)  -- add a random number to reduce name clashes
+    local i = 0  -- make sure the file does not already exist
+    local file = io.open(name .. i .. ".png", "r")
+    while file do
+      file:close()
+      i = i + 1
+      file = io.open(name .. i .. ".png", "r")
+    end
+    im:png(name .. i .. ".png")
+    gd.fontCacheShutdown()
+  }%
+  Solid {
+    name IS name
+    translation IS translation
+    rotation IS rotation
+    children [
+      Shape {
+        appearance PBRAppearance {
+          metalness 0
+          roughness 0.5
+        }
+        geometry Box {
+          size 0.2667 0.2667 0.005588
+        }
+        castShadows FALSE
+      }
+      Transform {
+        translation 0 0 0.003
+        children [
+          AprilTag16h5 {
+            rotation 1 0 0 0
+            aprilTagId IS aprilTagId
+          }
+        ]
+      }
+      Transform {
+        translation 0 %{= -0.1016 - labelHeightMeters/2 }% 0.003
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColorMap ImageTexture {
+                url [ %{= '"' .. context.temporary_files_path .. name .. i .. '.png"' }% ]
+              }
+              metalness 0
+              roughness 0.5
+            }
+            geometry Plane {
+              size %{= labelWidthMeters }% %{= labelHeightMeters }%
+            }
+            castShadows FALSE
+          }
+        ]
+      }
+    ]
+  }
+}
