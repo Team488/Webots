@@ -1,0 +1,35 @@
+#VRML_OBJ R2022a utf8
+
+PROTO AprilTag16h5 [
+  field SFString   name        "april-tag"
+  field SFVec3f    translation 0 0 0
+  field SFRotation rotation    0 0.707107 0.707107 3.14159
+  field SFVec2f    size        0.2032 0.2032
+  field SFInt32    aprilTagId  0
+]
+{
+  Solid {
+    name IS name
+    translation IS translation
+    rotation IS rotation
+    children [
+      Shape {
+        appearance PBRAppearance {
+          baseColorMap ImageTexture {
+            url [
+              %{ -- images downloaded from https://github.com/AprilRobotics/apriltag-imgs/tree/master/tag16h5 }%
+              %{= "\"textures/tag16_05_" .. string.format("%05d", fields.aprilTagId.value) .. ".png\"" }%
+            ]
+            filtering 0
+          }
+          metalness 0
+          rougness 0.5
+        }
+        geometry Plane {
+          size IS size
+        }
+        castShadows FALSE
+      }
+    ]
+  }
+}
