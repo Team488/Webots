@@ -1,7 +1,6 @@
 #VRML_OBJ R2022a utf8
 
 PROTO Text [
-  field SFString   name        "text"
   field SFVec3f    translation 0 0 0
   field SFRotation rotation    1 0 0 0
   field SFVec2f    size        1 1
@@ -114,7 +113,8 @@ PROTO Text [
               center %{=fields.appearance.value.fields.textureTransform.value.fields.center.value.x}% %{=fields.appearance.value.fields.textureTransform.value.fields.center.value.y}%
               rotation %{=fields.appearance.value.fields.textureTransform.value.fields.rotation.value}%
               scale %{=fields.appearance.value.fields.textureTransform.value.fields.scale.value.x}% %{=fields.appearance.value.fields.textureTransform.value.fields.scale.value.y}%
-              translation %{=fields.appearance.value.fields.textureTransform.value.fields.translation.value.x}% %{=fields.appearance.value.fields.textureTransform.value.fields.translation.value.y}%
+              # adding translation here causes webots to not give this object axis handles, so it's ignored
+              # we don't need it here anyway since the entire object is encapsulated in a transform
             }
           %{ end }%
         }
