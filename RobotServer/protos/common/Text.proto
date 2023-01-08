@@ -1,0 +1,128 @@
+#VRML_OBJ R2022a utf8
+
+PROTO Text [
+  field SFString   name        "text"
+  field SFVec3f    translation 0 0 0
+  field SFRotation rotation    1 0 0 0
+  field SFVec2f    size        1 1
+  field SFInt32    dpi         8
+  field SFString   text        "TEXT"
+  field SFString   font        "Arial"
+  field SFInt32    fontSize    800
+  field SFColor    textColor   0 0 0
+  field SFNode     appearance  PBRAppearance {
+    baseColor 1 1 1
+    metalness 0
+    roughness 1
+  }
+]
+{
+  %{
+    local gd = require("gd")
+    local debug = require("debug")
+    local os = require('os')
+
+    function roundUpToPowerOf2(x)
+      return math.pow(2, math.ceil(math.log(x)/math.log(2)))
+    end
+
+    -- calculate the image size
+    local inchesPerMeter = 39.3701
+    local widthInches = fields.size.value.x * inchesPerMeter
+    local heightInches = fields.size.value.y * inchesPerMeter
+    local imageWidth = roundUpToPowerOf2(widthInches * fields.dpi.value)
+    local imageHeight = roundUpToPowerOf2(heightInches * fields.dpi.value)
+    local hdpi = math.floor(imageWidth / widthInches)
+    local vdpi = math.floor(imageHeight / heightInches)
+
+    -- serialize all the params into a name that uniquely identifies this image
+    local baseColor = fields.appearance.value.fields.baseColor.value
+    name = debug.getinfo(1, 'S').source -- get the name of the current file
+    name = name
+      .. '.' .. fields.text.value
+      .. '.' .. fields.font.value
+      .. '.' .. fields.fontSize.value
+      .. '.' .. fields.textColor.value.r
+      .. '.' .. fields.textColor.value.g
+      .. '.' .. fields.textColor.value.b
+      .. '.' .. baseColor.r
+      .. '.' .. baseColor.g
+      .. '.' .. baseColor.b
+      .. '.' .. imageWidth
+      .. '.' .. imageHeight
+      .. '.' .. hdpi
+      .. '.' .. vdpi
+    name = name .. '.png'
+
+    -- create the file if it doesn't exist already
+    local file = io.open(name, 'r')
+    if file then
+      file:close()
+    else
+      -- construct an image
+      local im = gd.createTrueColor(imageWidth, imageHeight)
+      local textColor = im:colorAllocate(
+        math.floor(fields.textColor.value.r * 255),
+        math.floor(fields.textColor.value.g * 255),
+        math.floor(fields.textColor.value.b * 255)
+      )
+      local bgColor = im:colorAllocate(
+        math.floor(baseColor.r * 255),
+        math.floor(baseColor.g * 255),
+        math.floor(baseColor.b * 255)
+      )
+
+      -- draw text once to get dimensions
+      gd.fontCacheSetup()
+      local llx, lly, lrx, lry, urx, ury, ulx, uly = im:stringFTEx(bgColor, fields.font.value, fields.fontSize.value, 0, 0, 0, fields.text.value, { hdpi=hdpi, vdpi=vdpi })
+
+      -- fill the background color
+      im:filledRectangle(0, 0, imageWidth - 1, imageHeight - 1, bgColor)
+
+      -- draw text for real, centered
+      local textX = (imageWidth - lrx) / 2
+      local textY = (imageHeight - ury) / 2
+      im:stringFTEx(textColor, fields.font.value, fields.fontSize.value, 0, textX, textY, fields.text.value, { hdpi=hdpi, vdpi=vdpi })
+
+      -- save the image to file
+      im:png(name)
+      gd.fontCacheShutdown()
+    end
+  }%
+  Transform {
+    translation IS translation
+    rotation IS rotation
+    children [
+      Shape {
+        appearance PBRAppearance {
+          baseColorMap ImageTexture {
+            url [ %{= '"' .. context.temporary_files_path .. name .. '"' }% ]
+            repeatS FALSE
+            repeatT FALSE
+            filtering 0
+          }
+
+          # unpack all the remaining appearance values
+          transparency %{=fields.appearance.value.fields.transparency.value}%
+          roughness %{=fields.appearance.value.fields.roughness.value}%
+          metalness %{=fields.appearance.value.fields.metalness.value}%
+          IBLStrength %{=fields.appearance.value.fields.IBLStrength.value}%
+          emissiveColor %{=fields.appearance.value.fields.emissiveColor.value.r}% %{=fields.appearance.value.fields.emissiveColor.value.g}% %{=fields.appearance.value.fields.emissiveColor.value.b}%
+          emissiveIntensity %{=fields.appearance.value.fields.emissiveIntensity.value}%
+          %{ if fields.appearance.value.fields.textureTransform.value then }%
+            textureTransform TextureTransform {
+              center %{=fields.appearance.value.fields.textureTransform.value.fields.center.value.x}% %{=fields.appearance.value.fields.textureTransform.value.fields.center.value.y}%
+              rotation %{=fields.appearance.value.fields.textureTransform.value.fields.rotation.value}%
+              scale %{=fields.appearance.value.fields.textureTransform.value.fields.scale.value.x}% %{=fields.appearance.value.fields.textureTransform.value.fields.scale.value.y}%
+              translation %{=fields.appearance.value.fields.textureTransform.value.fields.translation.value.x}% %{=fields.appearance.value.fields.textureTransform.value.fields.translation.value.y}%
+            }
+          %{ end }%
+        }
+        geometry Plane {
+          size IS size
+        }
+        castShadows FALSE
+      }
+    ]
+  }
+}
