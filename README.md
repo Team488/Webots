@@ -79,7 +79,7 @@ wget https://cyberbotics.com/files/repository/dependencies/linux64/release/libss
 tar xvf /tmp/libssl_1.1.tar.xz -C /tmp`
 ```
 
-3. Move openssl-1.1/ into webots directory
+3. Move openssl-1.1/ into webots directory. (NOTE:  `/usr/local/` is the default installation directory but change path to where webots is installed)
 ```bash
-mv /tmp/openssl-1.1/* /usr/local/webots/lib/webots``` (CHANGE `/usr/local` to the directory where you installed webots)
+mv /tmp/openssl-1.1/* /usr/local/webots/lib/webots``` 
 ```
