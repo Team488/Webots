@@ -61,7 +61,7 @@ Which will return the current sensor values for the robot.
 ## Troubleshooting
 ### Ubuntu 22.04
 
-Since we are on Webots 2022a, the normal installation for Webots would result in the following error when trying to download textures on 22.04:
+Since we are on Webots 2022a, the Debian installation for Webots would result in the following error when trying to download textures on 22.04:
 ```
 WARNING: RectangleArena (PROTO) > Parquetry (PROTO) > ImageTexture: Cannot download
 ```
