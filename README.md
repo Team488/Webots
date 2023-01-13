@@ -59,7 +59,7 @@ curl -XPUT localhost:10002/motors -d '{"motors": [{"id": "Motor1", "val": 1.0}]}
 Which will return the current sensor values for the robot.
 
 ## Troubleshooting
-##### Ubuntu 22.04
+### Ubuntu 22.04
 
 Since we are on Webots 2022a, the normal installation for Webots would result in the following error when trying to download textures on 22.04:
 ```
@@ -83,3 +83,5 @@ tar xvf /tmp/libssl_1.1.tar.xz -C /tmp`
 ```bash
 mv /tmp/openssl-1.1/* /usr/local/webots/lib/webots``` 
 ```
+#### Windows
+
