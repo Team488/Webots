@@ -76,12 +76,12 @@ wget https://cyberbotics.com/files/repository/dependencies/linux64/release/libss
 
 2. Unzip the tar.xz file
 ```bash
-tar xvf /tmp/libssl_1.1.tar.xz -C /tmp`
+tar xvf /tmp/libssl_1.1.tar.xz -C /tmp
 ```
 
 3. Move openssl-1.1/ into webots directory. (NOTE:  `/usr/local/` is the default installation directory but change path to where webots is installed)
 ```bash
-mv /tmp/openssl-1.1/* /usr/local/webots/lib/webots``` 
+mv /tmp/openssl-1.1/* /usr/local/webots/lib/webots
 ```
 #### Windows
 
