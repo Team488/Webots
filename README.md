@@ -69,13 +69,17 @@ WARNING: RectangleArena (PROTO) > Parquetry (PROTO) > ImageTexture: Cannot downl
 
 Run through the following fixes:
 
-1. ```bash
+1. Install a newer version of libssl that is compatible with 2022a.
+```bash
 wget https://cyberbotics.com/files/repository/dependencies/linux64/release/libssl_1.1.tar.xz -O /tmp/libssl_1.1.tar.xz
 ```
 
-2. ```bash
+2. Unzip the tar.xz file
+```bash
 tar xvf /tmp/libssl_1.1.tar.xz -C /tmp`
 ```
 
-3. ```bash
+3. Move openssl-1.1/ into webots directory
+```bash
 mv /tmp/openssl-1.1/* /usr/local/webots/lib/webots``` (CHANGE `/usr/local` to the directory where you installed webots)
+```
