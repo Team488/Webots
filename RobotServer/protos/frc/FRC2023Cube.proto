@@ -1,0 +1,51 @@
+
+#VRML_SIM R2021a utf8
+
+PROTO FRC2023Cube [
+    field SFVec3f    translation 0 0 0
+    field SFRotation rotation    1 0 0 0
+    field SFString   name        "cube"
+    field SFColor    color       0.22 0.008 0.698
+    field SFNode     physics     Physics {
+        density -1
+        mass 0.071
+    }
+    field SFString   contactMaterial "cube"
+]
+{
+    Solid {
+        name IS name
+        translation IS translation
+        rotation IS rotation
+        physics IS physics
+        contactMaterial IS contactMaterial
+        children [
+            Transform {
+                rotation 1 0 0 1.570796
+                scale 0.001 0.001 0.001
+                children [
+                    Shape {
+                        geometry Mesh {
+                            url "models/frc-2023-cube.obj"
+                        }
+                        appearance PBRAppearance {
+                            baseColor IS color
+                            roughness 0.4
+                            metalness 0
+                        }
+                    }
+                ]
+            }
+        ]
+        boundingObject Group {
+            children [
+                Box {
+                    size 0.1778 0.1778 0.1778
+                }
+                Sphere {
+                    radius 0.12065
+                }
+            ]
+        }
+    }
+}
