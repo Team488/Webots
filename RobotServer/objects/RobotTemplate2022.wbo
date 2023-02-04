@@ -7,20 +7,20 @@ DEF RobotTemplate Robot {
       translation 0.37 -0.35 0.07
       wheelDevice [
         PositionSensor {
-          name "CAN1 #"
+          name "CAN31 #"
         }
         RotationalMotor {
-          name "Motor1 # front left wheel"
-          maxVelocity 15
+          name "Motor31 # front left wheel"
+          maxVelocity 75
         }
       ]
       steeringDevice [
         PositionSensor {
-          name "CAN21 #"
+          name "CAN51 #"
         }
         RotationalMotor {
-          name "Motor11 # front left direction"
-          maxVelocity 15
+          name "Motor30 # front left direction"
+          maxVelocity 75
         }
       ]
     }
@@ -29,20 +29,20 @@ DEF RobotTemplate Robot {
       name "wheel(1)"
       wheelDevice [
         PositionSensor {
-          name "CAN2 #"
+          name "CAN29 #"
         }
         RotationalMotor {
-          name "Motor2 # front right wheel"
-          maxVelocity 15
+          name "Motor29 # front right wheel"
+          maxVelocity 75
         }
       ]
       steeringDevice [
         PositionSensor {
-          name "CAN22 #"
+          name "CAN52 #"
         }
         RotationalMotor {
-          name "Motor12 # front right direction"
-          maxVelocity 15
+          name "Motor28 # front right direction"
+          maxVelocity 75
         }
       ]
     }
@@ -51,20 +51,20 @@ DEF RobotTemplate Robot {
       name "wheel(2)"
       wheelDevice [
         PositionSensor {
-          name "CAN3 #"
+          name "CAN38 #"
         }
         RotationalMotor {
-          name "Motor3 # back left wheel"
-          maxVelocity 15
+          name "Motor38 # back left wheel"
+          maxVelocity 75
         }
       ]
       steeringDevice [
         PositionSensor {
-          name "CAN23 #"
+          name "CAN53 #"
         }
         RotationalMotor {
-          name "Motor13 # back left direction"
-          maxVelocity 15
+          name "Motor39 # back left direction"
+          maxVelocity 75
         }
       ]
     }
@@ -73,20 +73,20 @@ DEF RobotTemplate Robot {
       name "wheel(3)"
       wheelDevice [
         PositionSensor {
-          name "CAN4 #"
+          name "CAN21 #"
         }
         RotationalMotor {
-          name "Motor4 # back right wheel"
-          maxVelocity 15
+          name "Motor21 # back right wheel"
+          maxVelocity 75
         }
       ]
       steeringDevice [
         PositionSensor {
-          name "CAN24 #"
+          name "CAN54 #"
         }
         RotationalMotor {
-          name "Motor14 # back right direction"
-          maxVelocity 15
+          name "Motor20 # back right direction"
+          maxVelocity 75
         }
       ]
     }
@@ -123,7 +123,7 @@ DEF RobotTemplate Robot {
       rotation 0 0 1 1.5707963267982696
     }
     InertialUnit {
-      name "IMU1"
+      name "IMU4"
     }
     Transform {
       translation 0 0 0.5
