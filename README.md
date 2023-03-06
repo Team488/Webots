@@ -57,3 +57,31 @@ curl -XPUT localhost:10002/motors -d '{"motors": [{"id": "Motor1", "val": 1.0}]}
 ```
 
 Which will return the current sensor values for the robot.
+
+## Troubleshooting
+### Ubuntu 22.04
+
+Since we are on Webots 2022a, the Debian installation for Webots would result in the following error when trying to download textures on 22.04:
+```
+WARNING: RectangleArena (PROTO) > Parquetry (PROTO) > ImageTexture: Cannot download
+```
+- The reason is that the 2022a's version of libssl is incompatible w/ Ubuntu 22.04 as 2022a is written for 20.04. 
+
+Run through the following fixes:
+
+1. Install a newer version of libssl that is compatible with 2022a.
+```bash
+wget https://cyberbotics.com/files/repository/dependencies/linux64/release/libssl_1.1.tar.xz -O /tmp/libssl_1.1.tar.xz
+```
+
+2. Unzip the tar.xz file
+```bash
+tar xvf /tmp/libssl_1.1.tar.xz -C /tmp
+```
+
+3. Move openssl-1.1/ into webots directory. (NOTE:  `/usr/local/` is the default installation directory but change path to where webots is installed)
+```bash
+mv /tmp/openssl-1.1/* /usr/local/webots/lib/webots
+```
+#### Windows
+
