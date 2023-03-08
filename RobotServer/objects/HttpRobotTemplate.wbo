@@ -7,6 +7,10 @@ DEF RobotTemplate Robot {
       translation 0 0.4953 0.5
       rotation 0 0 -1 -1.5708
     }
+    OakDLite {
+      translation 0 0.49135 0.6
+      rotation 0 0 -1 -1.5708
+    }
     Elevator {
       translation 0 -0.47 0.32
     }
