@@ -45,7 +45,7 @@ Get-Command python | %{$_.Source}
 Spawning a robot:
 
 ```bash
-curl -XPOST localhost:10001/robot -d '{"template": "HttpRobotTemplate"}' --header "Content-Type: application/json"
+C:\Users\TeamX>curl -XPOST localhost:10001/robot -d "{\"template\": \"HttpRobotTemplate\"}" --header "Content-Type: application/json"
 ```
 
 which will return the port the new robot was spawned on (10002 for the first robot by default).
