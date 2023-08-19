@@ -45,7 +45,7 @@ Get-Command python | %{$_.Source}
 Spawning a robot:
 
 ```bash
-curl -XPOST localhost:10001/robot -d '{"template": "HttpRobotTemplate"}' --header "Content-Type: application/json"
+curl -XPOST localhost:10001/robot -d '{\"template\": \"HttpRobotTemplate\"}' --header "Content-Type: application/json"
 ```
 
 which will return the port the new robot was spawned on (10002 for the first robot by default).
@@ -53,7 +53,7 @@ which will return the port the new robot was spawned on (10002 for the first rob
 Then to send motor values to the robot:
 
 ```bash
-curl -XPUT localhost:10002/motors -d '{"motors": [{"id": "Motor1", "val": 1.0}]}' --header "Content-Type: application/json"
+curl -XPUT localhost:10002/motors -d '{\"motors\": [{\"id\": \"Motor1\", \"val\": 1.0}]}' --header "Content-Type: application/json"
 ```
 
 Which will return the current sensor values for the robot.
